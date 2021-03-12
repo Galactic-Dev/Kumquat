@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "container:Tweak.x">
+   </FileRef>
+   <FileRef
+      location = "group:kumquatprefs">
+   </FileRef>
+   <FileRef
+      location = "group:Tweak.h">
+   </FileRef>
+   <FileRef
+      location = "group:control">
+   </FileRef>
+   <FileRef
+      location = "group:Kumquat.plist">
+   </FileRef>
+   <FileRef
+      location = "group:LICENSE">
+   </FileRef>
+   <FileRef
+      location = "group:Makefile">
+   </FileRef>
+   <FileRef
+      location = "group:README.md">
+   </FileRef>
+</Workspace>
