@@ -80,5 +80,10 @@
 
 @interface AXNView : UIView
 @property (strong, nonatomic) UICollectionView *collectionView;
+-(void)refresh;
 @end
 
+@interface AXNManager : NSObject
++(instancetype)sharedInstance;
+@property (nonatomic, weak) AXNView *view;
+@end

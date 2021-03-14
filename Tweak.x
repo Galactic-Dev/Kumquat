@@ -6,13 +6,13 @@ CSNotificationAdjunctListViewController *adjunctListController;
 BOOL notifications = NO;
 
 //Preference Values
+BOOL isEnabled;
 NSInteger currentLayout;
 NSInteger defaultLayout;
 NSInteger layoutForNotifications;
 BOOL switchIfNotifications;
 CGFloat artworkHeight;
 
-%group Main
 %hook MRUNowPlayingView
 -(void)setContext:(NSInteger)context {
     %orig;
@@ -26,31 +26,26 @@ CGFloat artworkHeight;
             self.layout = 1;
             self.containerView.showSeparator = NO;
         }
-        return;
+        notifications = NO;
     }
-    %orig; 
 }
 -(instancetype)initWithFrame:(CGRect)frame {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(kumquatNotificationsChanged) name:@"KumquatNotificationsChanged" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(kumquatNotificationsChanged) name:@"KumquatStyleChange" object:nil];
     return %orig;
 }
 -(void)dealloc {
     %orig;
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"KumquatNotificationsChanged" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"KumquatStyleChange" object:nil];
 }
 %new
 -(void)kumquatNotificationsChanged {
-    RLog(@"CALLED");
     if(notifications) {
         currentLayout = layoutForNotifications;
-        RLog(@"LAYOUT %d", currentLayout);
     }
     else {
         currentLayout = defaultLayout;
-        RLog(@"LAYOUT :fr: %d", currentLayout);
     }
     if(self.context == 2) {
-        RLog(@"currentLayout %d", currentLayout);
         switch(currentLayout) {
             case 0:
                 self.layout = 4;
@@ -79,7 +74,6 @@ CGFloat artworkHeight;
         id nowPlayingItem = [adjunctListController.identifiersToItems objectForKey:@"SBDashBoardNowPlayingAssertionIdentifier"];
         if(nowPlayingItem) {
             [adjunctListController _insertItem:nowPlayingItem animated:NO];
-            RLog(@"firstObject %@", adjunctListController.stackView.arrangedSubviews.firstObject);
             [adjunctListController.stackView.arrangedSubviews.firstObject removeFromSuperview];
             [adjunctListController.view _layoutStackView];
         }
@@ -89,12 +83,12 @@ CGFloat artworkHeight;
 
 %hook CSMediaControlsViewController
 -(instancetype)init {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_layoutMediaControls) name:@"KumquatNotificationsChanged" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_layoutMediaControls) name:@"KumquatStyleChange" object:nil];
     return %orig;
 }
 -(void)dealloc {
     %orig;
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"KumquatNotificationsChanged" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"KumquatStyleChange" object:nil];
 }
 -(CGRect)_suggestedFrameForMediaControls {
     CGRect oldSize = %orig;
@@ -137,9 +131,13 @@ CGFloat artworkHeight;
 -(void)setFrame:(CGRect)frame {
     if(currentLayout == 1) {
         MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview;
-        if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2) %orig(CGRectMake(0,0,frame.size.width, frame.size.height + artworkHeight + 10 /*just some extra padding between song title & album cover*/));
+        if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2) {
+            CGRect newFrame = CGRectMake(0,0,frame.size.width, frame.size.height + artworkHeight + 10 /*just some extra padding between song title & album cover*/);
+            %orig(newFrame);
+            return;
+        }
     }
-    else %orig;
+    %orig;
 }
 %end
 
@@ -161,66 +159,64 @@ CGFloat artworkHeight;
     self.view.frame = CGRectZero;
 }
 %end
-%end
 
-%group Notifications
 %hook NCNotificationMasterList
 -(NSUInteger)notificationCount {
     NSUInteger retVal = %orig;
+    
+    if(!switchIfNotifications) return retVal;
+    
     if(!notifications && retVal > 0) {
-        RLog(@"RET VAL %llu", retVal);
         notifications = YES;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"KumquatNotificationsChanged" object:self];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"KumquatStyleChange" object:self];
     }
     else if(notifications && retVal == 0) {
-        RLog(@"RET VAL %llu", retVal);
         notifications = NO;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"KumquatNotificationsChanged" object:self];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"KumquatStyleChange" object:self];
     }
     return retVal;
 }
 %end
-%end
 
-%group Axon
 %hook AXNView
 -(void)refresh {
-    RLog(@"REFERSHING");
     %orig;
+    if(!switchIfNotifications) return;
+    
     if(!notifications && self.collectionView.visibleCells.count > 0) {
-        RLog(@"CONDESNEDS");
         notifications = YES;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"KumquatNotificationsChanged" object:self];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"KumquatStyleChange" object:self];
     }
     else if (notifications && self.collectionView.visibleCells.count == 0) {
-        RLog(@"DSEXEPANDEDE");
         notifications = NO;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"KumquatNotificationsChanged" object:self];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"KumquatStyleChange" object:self];
     }
 }
-%end
 %end
 
 static void loadPrefs() {
     NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist"];
+    
+    isEnabled = [prefs objectForKey:@"isEnabled"] ? [[prefs objectForKey:@"isEnabled"] boolValue] : YES;
+    
     defaultLayout = [prefs objectForKey:@"defaultStyle"] ? [[prefs objectForKey:@"defaultStyle"] intValue] : 0;
-    RLog(@"defaults layouts %d", defaultLayout);
     currentLayout = defaultLayout;
-    RLog(@"LAYOUT BITCH %d", currentLayout);
+    
     layoutForNotifications = [prefs objectForKey:@"layoutForNotifications"] ? [[prefs objectForKey:@"layoutForNotifications"] intValue] : 0;
-    RLog(@"layoutfornotifs %d", layoutForNotifications);
-    switchIfNotifications = [prefs objectForKey:@"switchIfNotficiations"] ? [[prefs objectForKey:@"switchIfNotficiations"] boolValue] : FALSE;
+    switchIfNotifications = [prefs objectForKey:@"switchIfNotifications"] ? [[prefs objectForKey:@"switchIfNotifications"] boolValue] : FALSE;
+    notifications = NO;
+    
     artworkHeight = [prefs objectForKey:@"artworkHeight"] ? [[prefs objectForKey:@"artworkHeight"] floatValue] : 255;
+}
+
+static void prefsChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+    RLog(@"PREFERENCES CHANGED");
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"KumquatStyleChange" object:nil];
+    loadPrefs();
 }
 
 %ctor {
     loadPrefs();
-    if(switchIfNotifications) {
-        if(dlopen("/Library/MobileSubstrate/DynamicLibraries/Axon.dylib", RTLD_LAZY)) {
-            RLog(@"AXON AXON AXON ");
-            %init(Axon);
-        }
-        else %init(Notifications);
-    }
-    %init(Main);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)prefsChanged, CFSTR("com.galacticdev.kumquatprefs.changed"), NULL, CFNotificationSuspensionBehaviorCoalesce);
+    if(isEnabled) %init;
 }

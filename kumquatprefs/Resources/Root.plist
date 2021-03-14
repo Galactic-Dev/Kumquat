@@ -15,84 +15,24 @@
 			<string>Style</string>
 		</dict>
 		<dict>
+			<key>PostNotification</key>
+			<string>com.galacticdev.kumquatprefs.changed</string>
 			<key>cell</key>
 			<string>PSSegmentCell</string>
+			<key>default</key>
+			<integer>0</integer>
+			<key>defaults</key>
+			<string>com.galacticdev.kumquatprefs</string>
 			<key>enabled</key>
 			<true/>
-			<key>label</key>
-			<string>Segmented Cell</string>
-			<key>validTitles</key>
-			<array>
-                <string>Normal</string>
-                <string>Large</string>
-                <string>Compact</string>
-                <string>No Scrub Bar</string>
-                <string>No Volume Bar</string>
-			</array>
-			<key>validValues</key>
-			<array>
-				<integer>0</integer>
-				<integer>1</integer>
-				<integer>2</integer>
-                <integer>3</integer>
-                <integer>4</integer>
-			</array>
-            <key>default</key>
-            <integer>0</integer>
-            <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
-            <key>key</key>
-            <string>defaultStyle</string>
-            <key>PostNotification</key>
-            <string>com.galacticdev.kumquatprefs.changed</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>enabled</key>
-			<true/>
-			<key>footerText</key>
-			<string></string>
-			<key>label</key>
-			<string>Switch between layouts if there are notifications </string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>enabled</key>
-			<true/>
-			<key>label</key>
-			<string>Enabled</string>
-            <key>default</key>
-            <false/>
-            <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
-            <key>key</key>
-            <string>switchIfNotficiations</string>
-            <key>PostNotification</key>
-            <string>com.galacticdev.kumquatprefs.changed</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>enabled</key>
-			<true/>
-			<key>footerText</key>
-			<string></string>
-			<key>label</key>
-			<string>Layout for notifications</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSegmentCell</string>
-			<key>enabled</key>
-			<true/>
+			<key>key</key>
+			<string>defaultStyle</string>
 			<key>label</key>
 			<string>Segmented Cell</string>
 			<key>validTitles</key>
 			<array>
 				<string>Normal</string>
-                <string>Large</string>
+				<string>Large</string>
 				<string>Compact</string>
 				<string>No Scrub Bar</string>
 				<string>No Volume Bar</string>
@@ -103,43 +43,105 @@
 				<integer>1</integer>
 				<integer>2</integer>
 				<integer>3</integer>
-                <integer>4</integer>
+				<integer>4</integer>
 			</array>
-            <key>default</key>
-            <integer>0</integer>
-            <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
-            <key>key</key>
-            <string>layoutForNotifications</string>
-            <key>PostNotification</key>
-            <string>com.galacticdev.kumquatprefs.changed</string>
 		</dict>
-        <dict>
-            <key>cell</key>
-            <string>PSGroupCell</string>
-            <key>enabled</key>
-            <true/>
-            <key>footerText</key>
-            <string>The width of the artwork will also be equal to this value</string>
-            <key>label</key>
-            <string></string>
-        </dict>
-        <dict>
-            <key>cell</key>
-            <string>PSEditTextCell</string>
-            <key>label</key>
-            <string>Artwork Height For Large Layout</string>
-            <key>placeholder</key>
-            <string>255</string>
-            <key>keyboard</key>
-            <string>numbers</string>
-            <key>default</key>
-            <real>255</real>
-            <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
-            <key>key</key>
-            <string>artworkHeight</string>
-        </dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>enabled</key>
+			<true/>
+			<key>footerText</key>
+			<string></string>
+			<key>label</key>
+			<string>Switch layouts if there are notifications</string>
+		</dict>
+		<dict>
+			<key>PostNotification</key>
+			<string>com.galacticdev.kumquatprefs.changed</string>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.galacticdev.kumquatprefs</string>
+			<key>enabled</key>
+			<true/>
+			<key>id</key>
+			<string>switchIfNotifications</string>
+			<key>key</key>
+			<string>switchIfNotifications</string>
+			<key>label</key>
+			<string>Enabled</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>enabled</key>
+			<true/>
+			<key>footerText</key>
+			<string></string>
+			<key>id</key>
+			<string>layoutForNotificationsGroupCell</string>
+			<key>label</key>
+			<string>Layout for notifications</string>
+		</dict>
+		<dict>
+			<key>PostNotification</key>
+			<string>com.galacticdev.kumquatprefs.changed</string>
+			<key>cell</key>
+			<string>PSSegmentCell</string>
+			<key>default</key>
+			<integer>0</integer>
+			<key>defaults</key>
+			<string>com.galacticdev.kumquatprefs</string>
+			<key>enabled</key>
+			<true/>
+			<key>id</key>
+			<string>layoutForNotifications</string>
+			<key>key</key>
+			<string>layoutForNotifications</string>
+			<key>label</key>
+			<string>Segmented Cell</string>
+			<key>validTitles</key>
+			<array>
+				<string>Normal</string>
+				<string>Large</string>
+				<string>Compact</string>
+				<string>No Scrub Bar</string>
+				<string>No Volume Bar</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+				<integer>3</integer>
+				<integer>4</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>enabled</key>
+			<true/>
+			<key>footerText</key>
+			<string></string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>detail</key>
+			<string>KMQMoreOptionsController</string>
+			<key>enabled</key>
+			<true/>
+			<key>id</key>
+			<string>Link Cell</string>
+			<key>isController</key>
+			<true/>
+			<key>label</key>
+			<string>More Options</string>
+		</dict>
 	</array>
 	<key>title</key>
 	<string>Kumquat</string>

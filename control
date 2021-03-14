@@ -1,9 +1,10 @@
 Package: com.galacticdev.kumquat
 Name: Kumquat
-Version: 0.0.1
+Version: 1.0
 Architecture: iphoneos-arm
-Description: An awesome MobileSubstrate tweak!
-Maintainer: Galactic Dev
-Author: Galactic Dev
+Description: Customize your lockscreen music player on iOS 14.2+
+Maintainer: Galactic Dev <devgalactic@gmail.com>
+Author: Galactic Dev <devgalactic@gmail.com>
 Section: Tweaks
-Depends: mobilesubstrate (>= 0.9.5000)
+Depends: firmware (>= 14.2), mobilesubstrate (>= 0.9.5000)
+Depiction: https://galacticdev.me/depictions/?p=com.galacticdev.kumquat

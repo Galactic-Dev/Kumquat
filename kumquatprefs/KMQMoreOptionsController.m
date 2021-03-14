@@ -1,28 +1,42 @@
-#include "KMQRootListController.h"
+#include "KMQMoreOptionsController.h"
 
-@implementation KMQRootListController
-
+@implementation KMQMoreOptionsController
 - (NSArray *)specifiers {
-	if (!_specifiers) {
-		_specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
+    if (!_specifiers) {
+        _specifiers = [self loadSpecifiersFromPlistName:@"MoreOptions" target:self];
         
-        NSArray *chosenIDs = @[@"layoutForNotifications", @"layoutForNotificationsGroupCell"];
+        
+        NSArray *chosenIDs = @[@"headerY", @"headerX", @"headerWidth", @"headerHeight", @"artworkX", @"artworkY", @"artworkWidth", @"artworkHeight", @"playerX", @"playerY", @"playerWidth", @"playerHeight"];
         self.savedSpecifiers = (self.savedSpecifiers) ?: [NSMutableDictionary dictionary];
         for(PSSpecifier *specifier in [self specifiersForIDs:chosenIDs]) {
             [self.savedSpecifiers setObject:specifier forKey:[specifier propertyForKey:@"id"]];
         }
-	}
+    }
 
-	return _specifiers;
+    return _specifiers;
 }
 
 -(void)updateSpecifierVisibility:(BOOL)animated {
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist"];
-    if(![prefs[@"switchIfNotifications"] boolValue]) {
-        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"layoutForNotificationsGroupCell"], self.savedSpecifiers[@"layoutForNotifications"]] animated:animated];
+    if(![prefs[@"hasCustomHeaderFrame"] boolValue]) {
+        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"headerX"], self.savedSpecifiers[@"headerY"], self.savedSpecifiers[@"headerWidth"], self.savedSpecifiers[@"headerHeight"]] animated:animated];
     }
-    else if(![self containsSpecifier:self.savedSpecifiers[@"layoutForNotifications"]]) {
-        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"layoutForNotificationsGroupCell"], self.savedSpecifiers[@"layoutForNotifications"]] afterSpecifierID:@"switchIfNotifications" animated:animated];
+    else if(![self containsSpecifier:self.savedSpecifiers[@"headerX"]]) {
+        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"headerX"], self.savedSpecifiers[@"headerY"], self.savedSpecifiers[@"headerWidth"], self.savedSpecifiers[@"headerHeight"]] afterSpecifierID:@"hasCustomHeaderFrame" animated:animated];
+    }
+    
+    if(![prefs[@"hasCustomArtworkFrame"] boolValue]) {
+        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"artworkX"], self.savedSpecifiers[@"artworkY"], self.savedSpecifiers[@"artworkWidth"], self.savedSpecifiers[@"artworkHeight"]] animated:animated];
+    }
+    else if(![self containsSpecifier:self.savedSpecifiers[@"artworkX"]]) {
+        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"artworkX"], self.savedSpecifiers[@"artworkY"], self.savedSpecifiers[@"artworkWidth"], self.savedSpecifiers[@"artworkHeight"]] afterSpecifierID:@"hasCustomArtworkFrame" animated:animated];
+    }
+    
+    if(![prefs[@"hasCustomPlayerFrame"] boolValue]) {
+        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"playerX"], self.savedSpecifiers[@"playerY"], self.savedSpecifiers[@"playerWidth"], self.savedSpecifiers[@"playerHeight"]] animated:animated];
+    }
+    else if(![self containsSpecifier:self.savedSpecifiers[@"playerX"]]) {
+        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"playerX"], self.savedSpecifiers[@"playerY"], self.savedSpecifiers[@"playerWidth"], self.savedSpecifiers[@"playerHeight"]] afterSpecifierID:@"hasCustomPlayerFrame" animated:animated];
     }
 }
 
@@ -72,8 +86,8 @@
     [task launch];
 }
 
--(void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
+-(void)viewDidLoad {
+    [super viewDidLoad];
     
     [self updateSpecifierVisibility:NO];
     
@@ -90,35 +104,5 @@
         [enabledSwitch setOn:NO animated:NO];
     }
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:enabledSwitch];
-    
-    self.headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 25, self.view.frame.size.width, 200)];
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:@"/Library/PreferenceBundles/kumquatprefs.bundle/header.png"]];
-    imageView.frame = self.headerView.frame;
-    imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [self.headerView addSubview:imageView];
-    
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0,0,125,50)];
-    label.text = @"Kumquat";
-    label.font = [UIFont boldSystemFontOfSize:25];
-    label.textAlignment = NSTextAlignmentCenter;
-    [self.headerView addSubview:label];
-    label.translatesAutoresizingMaskIntoConstraints = NO;
-    [label.centerXAnchor constraintEqualToAnchor:self.headerView.centerXAnchor].active = YES;
-    [label.topAnchor constraintEqualToAnchor:imageView.topAnchor constant:25].active = YES;
-    
-    if(!self.navigationItem.titleView) {
-        KMQAnimatedTitleView *titleView = [[KMQAnimatedTitleView alloc] initWithTitle:@"Kumquat" minimumScrollOffsetRequired:0];
-        self.navigationItem.titleView = titleView;
-    }
 }
-
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    tableView.tableHeaderView = self.headerView;
-    return [super tableView:tableView cellForRowAtIndexPath:indexPath];
-}
-
--(void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if([self.navigationItem.titleView respondsToSelector:@selector(adjustLabelPositionToScrollOffset:)]) {
-        [(KMQAnimatedTitleView *)self.navigationItem.titleView adjustLabelPositionToScrollOffset:scrollView.contentOffset.y];
-    }}
 @end
