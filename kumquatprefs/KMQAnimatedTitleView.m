@@ -1,4 +1,5 @@
 #import "KMQAnimatedTitleView.h"
+#include <RemoteLog.h>
 
 @implementation KMQAnimatedTitleView {
   UILabel *_titleLabel;
@@ -33,6 +34,9 @@
   }
 
   -(void)adjustLabelPositionToScrollOffset:(CGFloat)offset {
+    if(_minimumOffsetRequired == 0) {
+        _minimumOffsetRequired = offset - (offset / 2);
+    }
     CGFloat adjustment = 50 - (offset - _minimumOffsetRequired);
     if(offset >= _minimumOffsetRequired) {
       if(adjustment <= 0) {
@@ -42,7 +46,7 @@
       }
 
     } else {
-      _yConstraint.constant = -50;
+      _yConstraint.constant = -100;
     }
   }
 @end

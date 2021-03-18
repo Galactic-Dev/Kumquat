@@ -12,4 +12,6 @@
 @property (strong, nonatomic) NSMutableDictionary *savedSpecifiers;
 -(void)updateSpecifierVisibility:(BOOL)animated;
 @property (strong, nonatomic) UIView *headerView;
+-(void)updateHeaderView;
+@property (strong, nonatomic) KMQAnimatedTitleView *titleView;
 @end

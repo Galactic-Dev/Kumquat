@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
+<!--Hi, if you're reading this for some reason, you might notice later that this plist looks very unorganized. It's bc I used an app I'm working on to make preference bundles, and it puts the keys in a weird order-->
 <dict>
 	<key>items</key>
 	<array>
@@ -32,7 +33,7 @@
 		</dict>
 		<dict>
 			<key>PostNotification</key>
-			<string>com.galacticdev.kumquatprefs</string>
+			<string>com.galacticdev.kumquatprefs.changed</string>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>defaults</key>
@@ -294,80 +295,14 @@
 			<key>enabled</key>
 			<true/>
 			<key>key</key>
-			<string>hasCustomPlayerFrame</string>
+			<string>hasCustomPlayerHeight</string>
 			<key>label</key>
-			<string>Custom Player Frame</string>
+			<string>Custom Player Height</string>
             <key>default</key>
             <false/>
             <key>id</key>
-            <string>hasCustomPlayerFrame</string>
+            <string>hasCustomPlayerHeight</string>
 		</dict>
-		<dict>
-			<key>PostNotification</key>
-			<string>com.galacticdev.kumquatprefs.changed</string>
-			<key>cell</key>
-			<string>PSEditTextCell</string>
-			<key>defaults</key>
-			<string>com.galacticdev.kumquatprefs</string>
-			<key>enabled</key>
-			<true/>
-			<key>key</key>
-			<string>playerX</string>
-			<key>keyboard</key>
-			<string>numbers</string>
-			<key>label</key>
-			<string>X Value</string>
-			<key>placeholder</key>
-			<string>0</string>
-            <key>default</key>
-            <real>0</real>
-            <key>id</key>
-            <string>playerX</string>
-		</dict>
-        <dict>
-            <key>PostNotification</key>
-            <string>com.galacticdev.kumquatprefs.changed</string>
-            <key>cell</key>
-            <string>PSEditTextCell</string>
-            <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
-            <key>enabled</key>
-            <true/>
-            <key>key</key>
-            <string>playerY</string>
-            <key>keyboard</key>
-            <string>numbers</string>
-            <key>label</key>
-            <string>Y Value</string>
-            <key>placeholder</key>
-            <string>0</string>
-            <key>default</key>
-            <real>0</real>
-            <key>id</key>
-            <string>playerY</string>
-        </dict>
-        <dict>
-            <key>PostNotification</key>
-            <string>com.galacticdev.kumquatprefs.changed</string>
-            <key>cell</key>
-            <string>PSEditTextCell</string>
-            <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
-            <key>enabled</key>
-            <true/>
-            <key>key</key>
-            <string>playerWidth</string>
-            <key>keyboard</key>
-            <string>numbers</string>
-            <key>label</key>
-            <string>Width</string>
-            <key>placeholder</key>
-            <string>0</string>
-            <key>default</key>
-            <real>0</real>
-            <key>id</key>
-            <string>playerWidth</string>
-        </dict>
         <dict>
             <key>PostNotification</key>
             <string>com.galacticdev.kumquatprefs.changed</string>
@@ -389,6 +324,338 @@
             <real>0</real>
             <key>id</key>
             <string>playerHeight</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>hasCustomVolumeBarFrame</string>
+            <key>label</key>
+            <string>Custom Volume Bar Frame</string>
+            <key>default</key>
+            <false/>
+            <key>id</key>
+            <string>hasCustomVolumeBarFrame</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSEditTextCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>volumeX</string>
+            <key>keyboard</key>
+            <string>numbers</string>
+            <key>label</key>
+            <string>X Value</string>
+            <key>placeholder</key>
+            <string>0</string>
+            <key>default</key>
+            <real>0</real>
+            <key>id</key>
+            <string>volumeX</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSEditTextCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>volumeY</string>
+            <key>keyboard</key>
+            <string>numbers</string>
+            <key>label</key>
+            <string>Y Value</string>
+            <key>placeholder</key>
+            <string>0</string>
+            <key>default</key>
+            <real>0</real>
+            <key>id</key>
+            <string>volumeY</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSEditTextCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>volumeWidth</string>
+            <key>keyboard</key>
+            <string>numbers</string>
+            <key>label</key>
+            <string>Width</string>
+            <key>placeholder</key>
+            <string>0</string>
+            <key>default</key>
+            <real>0</real>
+            <key>id</key>
+            <string>volumeWidth</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSEditTextCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>volumeHeight</string>
+            <key>keyboard</key>
+            <string>numbers</string>
+            <key>label</key>
+            <string>Height</string>
+            <key>placeholder</key>
+            <string>0</string>
+            <key>default</key>
+            <real>0</real>
+            <key>id</key>
+            <string>volumeHeight</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>hasCustomScrubberFrame</string>
+            <key>label</key>
+            <string>Custom Scrub Bar Frame</string>
+            <key>default</key>
+            <false/>
+            <key>id</key>
+            <string>hasCustomScrubberFrame</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSEditTextCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>scrubberX</string>
+            <key>keyboard</key>
+            <string>numbers</string>
+            <key>label</key>
+            <string>X Value</string>
+            <key>placeholder</key>
+            <string>0</string>
+            <key>default</key>
+            <real>0</real>
+            <key>id</key>
+            <string>scrubberX</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSEditTextCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>scrubberY</string>
+            <key>keyboard</key>
+            <string>numbers</string>
+            <key>label</key>
+            <string>Y Value</string>
+            <key>placeholder</key>
+            <string>0</string>
+            <key>default</key>
+            <real>0</real>
+            <key>id</key>
+            <string>scrubberY</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSEditTextCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>scrubberWidth</string>
+            <key>keyboard</key>
+            <string>numbers</string>
+            <key>label</key>
+            <string>Width</string>
+            <key>placeholder</key>
+            <string>0</string>
+            <key>default</key>
+            <real>0</real>
+            <key>id</key>
+            <string>scrubberWidth</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSEditTextCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>scrubberHeight</string>
+            <key>keyboard</key>
+            <string>numbers</string>
+            <key>label</key>
+            <string>Height</string>
+            <key>placeholder</key>
+            <string>0</string>
+            <key>default</key>
+            <real>0</real>
+            <key>id</key>
+            <string>scrubberHeight</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>footerText</key>
+            <string>These are the play/pause forward/backward buttons</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>hasCustomTransportFrame</string>
+            <key>label</key>
+            <string>Custom Transport Buttons Frame</string>
+            <key>default</key>
+            <false/>
+            <key>id</key>
+            <string>hasCustomTransportFrame</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSEditTextCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>transportX</string>
+            <key>keyboard</key>
+            <string>numbers</string>
+            <key>label</key>
+            <string>X Value</string>
+            <key>placeholder</key>
+            <string>0</string>
+            <key>default</key>
+            <real>0</real>
+            <key>id</key>
+            <string>transportX</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSEditTextCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>transportY</string>
+            <key>keyboard</key>
+            <string>numbers</string>
+            <key>label</key>
+            <string>Y Value</string>
+            <key>placeholder</key>
+            <string>0</string>
+            <key>default</key>
+            <real>0</real>
+            <key>id</key>
+            <string>transportY</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSEditTextCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>transportWidth</string>
+            <key>keyboard</key>
+            <string>numbers</string>
+            <key>label</key>
+            <string>Width</string>
+            <key>placeholder</key>
+            <string>0</string>
+            <key>default</key>
+            <real>0</real>
+            <key>id</key>
+            <string>transportWidth</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSEditTextCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>transportHeight</string>
+            <key>keyboard</key>
+            <string>numbers</string>
+            <key>label</key>
+            <string>Height</string>
+            <key>placeholder</key>
+            <string>0</string>
+            <key>default</key>
+            <real>0</real>
+            <key>id</key>
+            <string>transportHeight</string>
         </dict>
 	</array>
 	<key>title</key>

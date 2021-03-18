@@ -1,36 +1,44 @@
 #import "Tweak.h"
 
-
 CSNotificationAdjunctListViewController *adjunctListController;
-
 BOOL notifications = NO;
-
-//Preference Values
-BOOL isEnabled;
 NSInteger currentLayout;
-NSInteger defaultLayout;
-NSInteger layoutForNotifications;
-BOOL switchIfNotifications;
-CGFloat artworkHeight;
 
 %hook MRUNowPlayingView
 -(void)setContext:(NSInteger)context {
     %orig;
-    RLog(@"self.context %d", context);
     if(context == 2) {
-        RLog(@"currentLayout %d", currentLayout);
-        if(currentLayout == 1) {
-            self.layout = 2;
-        }
-        else if(currentLayout == 2) {
-            self.layout = 1;
-            self.containerView.showSeparator = NO;
+        switch (currentLayout) {
+            case 0:
+                break;
+            case 1:
+                self.layout = 2;
+                break;
+            case 2:
+                self.layout = 1;
+                self.containerView.showSeparator = NO;
+                self.controlsView.volumeControlsView.hidden = NO;
+                self.controlsView.headerView.artworkView.hidden = hideArtwork;
+                break;
+            case 3:
+                self.layout = 1;
+                self.containerView.showSeparator = NO;
+                self.controlsView.showTimeControlsView = NO;
+                self.controlsView.volumeControlsView.hidden = NO;
+                self.controlsView.headerView.artworkView.hidden = hideArtwork;
+                break;
+            case 4:
+                self.layout = 1;
+                self.containerView.showSeparator = NO;
+                self.controlsView.volumeControlsView.hidden = YES;
+                self.controlsView.headerView.showArtworkView = hideArtwork;
+                break;
         }
         notifications = NO;
     }
 }
 -(instancetype)initWithFrame:(CGRect)frame {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(kumquatNotificationsChanged) name:@"KumquatStyleChange" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(kumquatStyleChanged) name:@"KumquatStyleChange" object:nil];
     return %orig;
 }
 -(void)dealloc {
@@ -38,8 +46,8 @@ CGFloat artworkHeight;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"KumquatStyleChange" object:nil];
 }
 %new
--(void)kumquatNotificationsChanged {
-    if(notifications) {
+-(void)kumquatStyleChanged {
+    if(notifications && switchIfNotifications) {
         currentLayout = layoutForNotifications;
     }
     else {
@@ -57,15 +65,24 @@ CGFloat artworkHeight;
             case 2: {
                 self.layout = 1;
                 self.containerView.showSeparator = NO;
+                self.controlsView.showTimeControlsView = YES;
+                self.controlsView.volumeControlsView.hidden = NO;
+                self.controlsView.headerView.artworkView.hidden = hideArtwork; //artwork won't hide for some reason with this layout unless i hide it myself
                 break;
             }
             case 3:
                 self.layout = 1;
                 self.containerView.showSeparator = NO;
+                self.controlsView.showTimeControlsView = NO;
+                self.controlsView.volumeControlsView.hidden = NO;
+                self.controlsView.headerView.showArtworkView = hideArtwork;
                 break;
             case 4:
                 self.layout = 1;
                 self.containerView.showSeparator = NO;
+                self.controlsView.showTimeControlsView = YES;
+                self.controlsView.volumeControlsView.hidden = YES;
+                self.controlsView.headerView.showArtworkView = hideArtwork;
                 break;
             default:
                 self.layout = 4;
@@ -91,14 +108,23 @@ CGFloat artworkHeight;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"KumquatStyleChange" object:nil];
 }
 -(CGRect)_suggestedFrameForMediaControls {
-    CGRect oldSize = %orig;
-    if(currentLayout == 2) {
-        return CGRectMake(0, 0, oldSize.size.width, oldSize.size.height - 44);
+    CGRect oldRect = %orig;
+    if (hasCustomPlayerHeight) {
+        return CGRectMake(0, 0, oldRect.size.width, playerHeight);
     }
-    else if (currentLayout == 1) {
-        return CGRectMake(0, 0, oldSize.size.width, oldSize.size.height + artworkHeight);
+    switch (currentLayout) {
+        case 0:
+            return oldRect;
+        case 1:
+            return CGRectMake(0, 0, oldRect.size.width, oldRect.size.height + 200);
+        case 2:
+            return CGRectMake(0, 0, oldRect.size.width, oldRect.size.height - 44);
+        case 3:
+            return CGRectMake(0, 0, oldRect.size.width, oldRect.size.height - 44 - 44);
+        case 4:
+            return CGRectMake(0, 0, oldRect.size.width, oldRect.size.height - 44 - 44);
     }
-    return oldSize;
+    return oldRect;
 }
 %end
 
@@ -111,29 +137,43 @@ CGFloat artworkHeight;
 %end
 
 %hook MRUNowPlayingHeaderView
--(void)setArtworkOverrideFrame:(CGRect)arg1 {
-    if(currentLayout == 1) {
-        MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview;
-        CGFloat xvalue = (self.frame.size.width - artworkHeight) / 2;
-        if(nowPlayingView.context == 2) %orig(CGRectMake(xvalue,0,artworkHeight,artworkHeight));
-    }
-    else %orig;
-}
--(void)setUseArtworkOverrideFrame:(BOOL)arg1 {
-    if(currentLayout == 1) {
-        MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview;
-        if(nowPlayingView.context == 2) {
-           %orig(YES);
-        }
-    }
-    else %orig;
-}
 -(void)setFrame:(CGRect)frame {
-    if(currentLayout == 1) {
+    if(currentLayout == 1 || hasCustomHeaderFrame) {
         MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview;
         if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2) {
-            CGRect newFrame = CGRectMake(0,0,frame.size.width, frame.size.height + artworkHeight + 10 /*just some extra padding between song title & album cover*/);
-            %orig(newFrame);
+            if(hasCustomHeaderFrame) {
+                %orig(CGRectMake(headerX, headerY, headerWidth, headerHeight));
+                return;
+            }
+        }
+    }
+    %orig;
+}
+-(void)setShowRoutingButton:(BOOL)arg1 {
+    MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview;
+    if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2) {
+        if(hideRouteButton) %orig(NO);
+        else %orig;
+        
+        if(hideArtwork) self.showArtworkView = NO;
+        else self.showArtworkView = YES;
+    }
+}
+%end
+
+%hook MRUArtworkView
+//I would use the artworkOverrideFrame property of MRUNowPlayingHeaderView, but the frame only applies when using the Large layout
+-(void)setFrame:(CGRect)frame {
+    CGFloat xvalue = (self.superview.superview.frame.size.width - 200) / 2;
+    
+    MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview.superview;
+    if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2) {
+        if(hasCustomArtworkFrame) {
+            %orig(CGRectMake(artworkX, artworkY, artworkWidth, artworkHeight));
+            return;
+        }
+        else if(nowPlayingView.layout == 2) {
+            %orig(CGRectMake(xvalue,0,200,200));
             return;
         }
     }
@@ -141,22 +181,33 @@ CGFloat artworkHeight;
 }
 %end
 
-@implementation KumquatView
+%hook MRUNowPlayingVolumeControlsView
 -(void)setFrame:(CGRect)frame {
-    [super setFrame:self.rectToKeep];
+    MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview;
+    if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2 && hasCustomVolumeBarFrame) {
+        %orig(CGRectMake(volumeX, volumeY, volumeWidth, volumeHeight));
+    }
+    else %orig;
 }
-@end
+%end
 
-%hook MRUCoverSheetViewController
--(void)setView:(UIView *)arg1 {
-    KumquatView *view = [[KumquatView alloc] initWithFrame:arg1.frame];
-    %orig(view);
+%hook MRUNowPlayingTimeControlsView
+-(void)setFrame:(CGRect)frame {
+    MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview;
+    if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2 && hasCustomScrubberFrame) {
+        %orig(CGRectMake(scrubberX, scrubberY, scrubberWidth, scrubberHeight));
+    }
+    else %orig;
 }
--(void)viewDidAppear:(BOOL)arg1 {
-    %orig;
-    UIView *viewThing = self.parentViewController.view.superview;
-    self.view.rectToKeep = viewThing.frame;
-    self.view.frame = CGRectZero;
+%end
+
+%hook MRUNowPlayingTransportControlsView
+-(void)setFrame:(CGRect)frame {
+    MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview;
+    if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2 && hasCustomTransportFrame) {
+        %orig(CGRectMake(transportX, transportY, transportWidth, transportHeight));
+    }
+    else %orig;
 }
 %end
 
@@ -164,7 +215,7 @@ CGFloat artworkHeight;
 -(NSUInteger)notificationCount {
     NSUInteger retVal = %orig;
     
-    if(!switchIfNotifications) return retVal;
+    if(!switchIfNotifications || dlopen("/Library/MobileSubstrate/DynamicLibraries/Axon.dylib", RTLD_LAZY)) return retVal;
     
     if(!notifications && retVal > 0) {
         notifications = YES;
@@ -197,26 +248,65 @@ CGFloat artworkHeight;
 static void loadPrefs() {
     NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist"];
     
-    isEnabled = [prefs objectForKey:@"isEnabled"] ? [[prefs objectForKey:@"isEnabled"] boolValue] : YES;
+    isEnabled = prefs[@"isEnabled"] ? [prefs[@"isEnabled"] boolValue] : YES;
     
-    defaultLayout = [prefs objectForKey:@"defaultStyle"] ? [[prefs objectForKey:@"defaultStyle"] intValue] : 0;
+    defaultLayout = prefs[@"defaultStyle"] ? [prefs[@"defaultStyle"] intValue] : 0;
     currentLayout = defaultLayout;
     
-    layoutForNotifications = [prefs objectForKey:@"layoutForNotifications"] ? [[prefs objectForKey:@"layoutForNotifications"] intValue] : 0;
-    switchIfNotifications = [prefs objectForKey:@"switchIfNotifications"] ? [[prefs objectForKey:@"switchIfNotifications"] boolValue] : FALSE;
+    layoutForNotifications = prefs[@"layoutForNotifications"] ? [prefs[@"layoutForNotifications"] intValue] : 0;
+    switchIfNotifications = prefs[@"switchIfNotifications"] ? [prefs[@"switchIfNotifications"] boolValue] : FALSE;
     notifications = NO;
     
-    artworkHeight = [prefs objectForKey:@"artworkHeight"] ? [[prefs objectForKey:@"artworkHeight"] floatValue] : 255;
+    hideRouteButton = prefs[@"hideRouteButton"] ? [prefs[@"hideRouteButton"] boolValue] : FALSE;
+    hideArtwork = prefs[@"hideArtwork"] ? [prefs[@"hideArtwork"] boolValue] : FALSE;
+    
+    hasCustomHeaderFrame = prefs[@"hasCustomHeaderFrame"] ? [prefs[@"hasCustomHeaderFrame"] boolValue] : FALSE;
+    headerX = prefs[@"headerX"] ? [prefs[@"headerX"] floatValue] : 0;
+    headerY = prefs[@"headerY"] ? [prefs[@"headerY"] floatValue] : 0;
+    headerWidth = prefs[@"headerWidth"] ? [prefs[@"headerWidth"] floatValue] : 0;
+    headerHeight = prefs[@"headerHeight"] ? [prefs[@"headerHeight"] floatValue] : 0;
+
+    
+    hasCustomArtworkFrame = prefs[@"hasCustomArtworkFrame"] ? [prefs[@"hasCustomArtworkFrame"] boolValue] : FALSE;
+    artworkX = prefs[@"artworkX"] ? [prefs[@"artworkX"] floatValue] : 0;
+    artworkY = prefs[@"artworkY"] ? [prefs[@"artworkY"] floatValue] : 0;
+    artworkWidth = prefs[@"artworkWidth"] ? [prefs[@"artworkWidth"] floatValue] : 0;
+    artworkHeight = prefs[@"artworkHeight"] ? [prefs[@"artworkHeight"] floatValue] : 0;
+
+    
+    hasCustomPlayerHeight = prefs[@"hasCustomPlayerHeight"] ? [prefs[@"hasCustomPlayerHeight"] boolValue] : FALSE;
+    playerHeight = prefs[@"playerHeight"] ? [prefs[@"playerHeight"] floatValue] : 0;
+    
+    hasCustomVolumeBarFrame = prefs[@"hasCustomVolumeBarFrame"] ? [prefs[@"hasCustomVolumeBarFrame"] boolValue]: FALSE;
+    volumeX = prefs[@"volumeX"] ? [prefs[@"volumeX"] floatValue] : 0;
+    volumeY = prefs[@"volumeY"] ? [prefs[@"volumeY"] floatValue] : 0;
+    volumeWidth = prefs[@"volumeWidth"] ? [prefs[@"volumeWidth"] floatValue] : 0;
+    volumeHeight = prefs[@"volumeHeight"] ? [prefs[@"volumeHeight"] floatValue] : 0;
+
+    
+    hasCustomScrubberFrame = prefs[@"hasCustomScrubberFrame"] ? [prefs [@"hasCustomScrubberFrame"] boolValue]: FALSE;
+    scrubberX = prefs[@"scrubberX"] ? [prefs[@"scrubberX"] floatValue] : 0;
+    scrubberY = prefs[@"scrubberY"] ? [prefs[@"scrubberY"] floatValue] : 0;
+    scrubberWidth = prefs[@"scrubberWidth"] ? [prefs[@"scrubberWidth"] floatValue] : 0;
+    scrubberHeight = prefs[@"scrubberHeight"] ? [prefs[@"scrubberHeight"] floatValue] : 0;
+    
+    hasCustomTransportFrame = prefs[@"hasCustomTransportFrame"] ? [prefs[@"hasCustomTransportFrame"] boolValue]: FALSE;
+    transportX = prefs[@"transportX"] ? [prefs[@"transportX"] floatValue] : 0;
+    transportY = prefs[@"transportY"] ? [prefs[@"transportY"] floatValue] : 0;
+    transportWidth = prefs[@"transportWidth"] ? [prefs[@"transportWidth"] floatValue] : 0;
+    transportHeight = prefs[@"transportHeight"] ? [prefs[@"transportHeight"] floatValue] : 0;
 }
 
 static void prefsChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    RLog(@"PREFERENCES CHANGED");
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"KumquatStyleChange" object:nil];
     loadPrefs();
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"KumquatStyleChange" object:nil];
 }
 
 %ctor {
     loadPrefs();
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)prefsChanged, CFSTR("com.galacticdev.kumquatprefs.changed"), NULL, CFNotificationSuspensionBehaviorCoalesce);
     if(isEnabled) %init;
+    
+    RLog(@"isEnabled %d\n defaultLayout %d\n currentLayout %d\n layoutForNotifications %d\n switchIfNotifications %d\n notifications %d\n hideRouteButton %d\n hideArtwork %d\n hasCustomheaderFrame %d\n headerx %f\n headery %f\n headerwidth %f\n headerheight %f\n hascustomartframe %d\n artx %f\n arty %f\n artwidth %f\n artheight %f\n hascustomplayerheight %d\n playerheight %f\n hascustomvolumeframe %d\n volumex %f\n volumey %f\n volumewidth %f\n volumeheight %f\n hascustomscrubberframe %d\n scrubx %f\n scruby %f\n scrubwidth %f\n scrubheight %f\n hascustomtranpsrotframe %d\n transx %f\n transy %f\n transwidth %f\n transheight %f", isEnabled, defaultLayout, currentLayout, layoutForNotifications, switchIfNotifications, notifications, hideRouteButton, hideArtwork, hasCustomHeaderFrame, headerX, headerY, headerWidth, headerHeight, hasCustomArtworkFrame, artworkX, artworkY, artworkWidth, artworkHeight, hasCustomPlayerHeight, playerHeight, hasCustomVolumeBarFrame, volumeX, volumeY, volumeWidth, volumeHeight, hasCustomScrubberFrame, scrubberX, scrubberY, scrubberWidth, scrubberHeight, hasCustomTransportFrame, transportX, transportY, transportWidth, transportHeight);
+
 }

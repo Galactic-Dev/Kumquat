@@ -6,7 +6,7 @@
         _specifiers = [self loadSpecifiersFromPlistName:@"MoreOptions" target:self];
         
         
-        NSArray *chosenIDs = @[@"headerY", @"headerX", @"headerWidth", @"headerHeight", @"artworkX", @"artworkY", @"artworkWidth", @"artworkHeight", @"playerX", @"playerY", @"playerWidth", @"playerHeight"];
+        NSArray *chosenIDs = @[@"headerY", @"headerX", @"headerWidth", @"headerHeight", @"artworkX", @"artworkY", @"artworkWidth", @"artworkHeight", @"playerHeight", @"volumeX", @"volumeY", @"volumeWidth", @"volumeHeight", @"scrubberX", @"scrubberY", @"scrubberWidth", @"scrubberHeight", @"transportX", @"transportY", @"transportWidth", @"transportHeight"];
         self.savedSpecifiers = (self.savedSpecifiers) ?: [NSMutableDictionary dictionary];
         for(PSSpecifier *specifier in [self specifiersForIDs:chosenIDs]) {
             [self.savedSpecifiers setObject:specifier forKey:[specifier propertyForKey:@"id"]];
@@ -32,11 +32,32 @@
         [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"artworkX"], self.savedSpecifiers[@"artworkY"], self.savedSpecifiers[@"artworkWidth"], self.savedSpecifiers[@"artworkHeight"]] afterSpecifierID:@"hasCustomArtworkFrame" animated:animated];
     }
     
-    if(![prefs[@"hasCustomPlayerFrame"] boolValue]) {
-        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"playerX"], self.savedSpecifiers[@"playerY"], self.savedSpecifiers[@"playerWidth"], self.savedSpecifiers[@"playerHeight"]] animated:animated];
+    if(![prefs[@"hasCustomPlayerHeight"] boolValue]) {
+        [self removeSpecifier:self.savedSpecifiers[@"playerHeight"] animated:animated];
     }
-    else if(![self containsSpecifier:self.savedSpecifiers[@"playerX"]]) {
-        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"playerX"], self.savedSpecifiers[@"playerY"], self.savedSpecifiers[@"playerWidth"], self.savedSpecifiers[@"playerHeight"]] afterSpecifierID:@"hasCustomPlayerFrame" animated:animated];
+    else if(![self containsSpecifier:self.savedSpecifiers[@"playerHeight"]]) {
+        [self insertSpecifier:self.savedSpecifiers[@"playerHeight"] afterSpecifierID:@"hasCustomPlayerHeight" animated:animated];
+    }
+    
+    if(![prefs[@"hasCustomVolumeBarFrame"] boolValue]) {
+        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"volumeX"], self.savedSpecifiers[@"volumeY"], self.savedSpecifiers[@"volumeWidth"], self.savedSpecifiers[@"volumeHeight"]] animated:animated];
+    }
+    else if(![self containsSpecifier:self.savedSpecifiers[@"volumeX"]]) {
+        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"volumeX"], self.savedSpecifiers[@"volumeY"], self.savedSpecifiers[@"volumeWidth"], self.savedSpecifiers[@"volumeHeight"]] afterSpecifierID:@"hasCustomVolumeBarFrame" animated:animated];
+    }
+    
+    if(![prefs[@"hasCustomScrubberFrame"] boolValue]) {
+        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"scrubberX"], self.savedSpecifiers[@"scrubberY"], self.savedSpecifiers[@"scrubberWidth"], self.savedSpecifiers[@"scrubberHeight"]] animated:animated];
+    }
+    else if(![self containsSpecifier:self.savedSpecifiers[@"scrubberX"]]) {
+        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"scrubberX"], self.savedSpecifiers[@"scrubberY"], self.savedSpecifiers[@"scrubberWidth"], self.savedSpecifiers[@"scrubberHeight"]] afterSpecifierID:@"hasCustomScrubberFrame" animated:animated];
+    }
+    
+    if(![prefs[@"hasCustomTransportFrame"] boolValue]) {
+        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"transportX"], self.savedSpecifiers[@"transportY"], self.savedSpecifiers[@"transportWidth"], self.savedSpecifiers[@"transportHeight"]] animated:animated];
+    }
+    else if(![self containsSpecifier:self.savedSpecifiers[@"transportX"]]) {
+        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"transportX"], self.savedSpecifiers[@"transportY"], self.savedSpecifiers[@"transportWidth"], self.savedSpecifiers[@"transportHeight"]] afterSpecifierID:@"hasCustomTransportFrame" animated:animated];
     }
 }
 
@@ -104,5 +125,9 @@
         [enabledSwitch setOn:NO animated:NO];
     }
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:enabledSwitch];
+}
+
+-(void)_returnKeyPressed:(id)arg1 {
+    [self.view endEditing:YES];
 }
 @end
