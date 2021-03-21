@@ -47,6 +47,22 @@
             <key>default</key>
             <false/>
 		</dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>disableHeaderViewTouches</string>
+            <key>label</key>
+            <string>Don't open music app when pressed</string>
+            <key>default</key>
+            <false/>
+        </dict>
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
@@ -297,7 +313,7 @@
 			<key>key</key>
 			<string>hasCustomPlayerHeight</string>
 			<key>label</key>
-			<string>Custom Player Height</string>
+			<string>Custom Player View Height</string>
             <key>default</key>
             <false/>
             <key>id</key>

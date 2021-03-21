@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
+<!--Hi, if you're reading this for some reason, you might notice later that this plist looks very unorganized. It's bc I used an app I'm working on to make preference bundles, and it puts the keys in a weird order-->
 <dict>
 	<key>items</key>
 	<array>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>enabled</key>
+            <true/>
+            <key>footerText</key>
+            <string>The only option that requires a respring is enabling/disabling the tweak</string>
+            <key>label</key>
+            <string></string>
+        </dict>
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
@@ -142,6 +153,26 @@
 			<key>label</key>
 			<string>More Options</string>
 		</dict>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>enabled</key>
+            <true/>
+            <key>footerText</key>
+            <string></string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSLinkCell</string>
+            <key>detail</key>
+            <string>KMQCreditsController</string>
+            <key>enabled</key>
+            <true/>
+            <key>isController</key>
+            <true/>
+            <key>label</key>
+            <string>Contact &amp; Credits</string>
+        </dict>
 	</array>
 	<key>title</key>
 	<string>Kumquat</string>

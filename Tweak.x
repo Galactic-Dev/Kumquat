@@ -10,9 +10,13 @@ NSInteger currentLayout;
     if(context == 2) {
         switch (currentLayout) {
             case 0:
+                self.controlsView.showTimeControlsView = YES;
+                self.controlsView.volumeControlsView.hidden = NO;
                 break;
             case 1:
                 self.layout = 2;
+                self.controlsView.showTimeControlsView = YES;
+                self.controlsView.volumeControlsView.hidden = NO;
                 break;
             case 2:
                 self.layout = 1;
@@ -57,9 +61,13 @@ NSInteger currentLayout;
         switch(currentLayout) {
             case 0:
                 self.layout = 4;
+                self.controlsView.showTimeControlsView = YES;
+                self.controlsView.volumeControlsView.hidden = NO;
                 break;
             case 1: {
                 self.layout = 2;
+                self.controlsView.showTimeControlsView = YES;
+                self.controlsView.volumeControlsView.hidden = NO;
                 break;
             }
             case 2: {
@@ -159,6 +167,12 @@ NSInteger currentLayout;
         else self.showArtworkView = YES;
     }
 }
+-(BOOL)isUserInteractionEnabled {
+    if(disableHeaderViewTouches) {
+        return NO;
+    }
+    return %orig;
+}
 %end
 
 %hook MRUArtworkView
@@ -254,43 +268,44 @@ static void loadPrefs() {
     currentLayout = defaultLayout;
     
     layoutForNotifications = prefs[@"layoutForNotifications"] ? [prefs[@"layoutForNotifications"] intValue] : 0;
-    switchIfNotifications = prefs[@"switchIfNotifications"] ? [prefs[@"switchIfNotifications"] boolValue] : FALSE;
+    switchIfNotifications = prefs[@"switchIfNotifications"] ? [prefs[@"switchIfNotifications"] boolValue] : NO;
     notifications = NO;
     
-    hideRouteButton = prefs[@"hideRouteButton"] ? [prefs[@"hideRouteButton"] boolValue] : FALSE;
-    hideArtwork = prefs[@"hideArtwork"] ? [prefs[@"hideArtwork"] boolValue] : FALSE;
+    hideRouteButton = prefs[@"hideRouteButton"] ? [prefs[@"hideRouteButton"] boolValue] : NO;
+    hideArtwork = prefs[@"hideArtwork"] ? [prefs[@"hideArtwork"] boolValue] : NO;
+    disableHeaderViewTouches = prefs[@"disableHeaderViewTouches"] ? [prefs[@"disableHeaderViewTouches"] boolValue] : NO;
     
-    hasCustomHeaderFrame = prefs[@"hasCustomHeaderFrame"] ? [prefs[@"hasCustomHeaderFrame"] boolValue] : FALSE;
+    hasCustomHeaderFrame = prefs[@"hasCustomHeaderFrame"] ? [prefs[@"hasCustomHeaderFrame"] boolValue] : NO;
     headerX = prefs[@"headerX"] ? [prefs[@"headerX"] floatValue] : 0;
     headerY = prefs[@"headerY"] ? [prefs[@"headerY"] floatValue] : 0;
     headerWidth = prefs[@"headerWidth"] ? [prefs[@"headerWidth"] floatValue] : 0;
     headerHeight = prefs[@"headerHeight"] ? [prefs[@"headerHeight"] floatValue] : 0;
 
     
-    hasCustomArtworkFrame = prefs[@"hasCustomArtworkFrame"] ? [prefs[@"hasCustomArtworkFrame"] boolValue] : FALSE;
+    hasCustomArtworkFrame = prefs[@"hasCustomArtworkFrame"] ? [prefs[@"hasCustomArtworkFrame"] boolValue] : NO;
     artworkX = prefs[@"artworkX"] ? [prefs[@"artworkX"] floatValue] : 0;
     artworkY = prefs[@"artworkY"] ? [prefs[@"artworkY"] floatValue] : 0;
     artworkWidth = prefs[@"artworkWidth"] ? [prefs[@"artworkWidth"] floatValue] : 0;
     artworkHeight = prefs[@"artworkHeight"] ? [prefs[@"artworkHeight"] floatValue] : 0;
 
     
-    hasCustomPlayerHeight = prefs[@"hasCustomPlayerHeight"] ? [prefs[@"hasCustomPlayerHeight"] boolValue] : FALSE;
+    hasCustomPlayerHeight = prefs[@"hasCustomPlayerHeight"] ? [prefs[@"hasCustomPlayerHeight"] boolValue] : NO;
     playerHeight = prefs[@"playerHeight"] ? [prefs[@"playerHeight"] floatValue] : 0;
     
-    hasCustomVolumeBarFrame = prefs[@"hasCustomVolumeBarFrame"] ? [prefs[@"hasCustomVolumeBarFrame"] boolValue]: FALSE;
+    hasCustomVolumeBarFrame = prefs[@"hasCustomVolumeBarFrame"] ? [prefs[@"hasCustomVolumeBarFrame"] boolValue]: NO;
     volumeX = prefs[@"volumeX"] ? [prefs[@"volumeX"] floatValue] : 0;
     volumeY = prefs[@"volumeY"] ? [prefs[@"volumeY"] floatValue] : 0;
     volumeWidth = prefs[@"volumeWidth"] ? [prefs[@"volumeWidth"] floatValue] : 0;
     volumeHeight = prefs[@"volumeHeight"] ? [prefs[@"volumeHeight"] floatValue] : 0;
 
     
-    hasCustomScrubberFrame = prefs[@"hasCustomScrubberFrame"] ? [prefs [@"hasCustomScrubberFrame"] boolValue]: FALSE;
+    hasCustomScrubberFrame = prefs[@"hasCustomScrubberFrame"] ? [prefs [@"hasCustomScrubberFrame"] boolValue]: NO;
     scrubberX = prefs[@"scrubberX"] ? [prefs[@"scrubberX"] floatValue] : 0;
     scrubberY = prefs[@"scrubberY"] ? [prefs[@"scrubberY"] floatValue] : 0;
     scrubberWidth = prefs[@"scrubberWidth"] ? [prefs[@"scrubberWidth"] floatValue] : 0;
     scrubberHeight = prefs[@"scrubberHeight"] ? [prefs[@"scrubberHeight"] floatValue] : 0;
     
-    hasCustomTransportFrame = prefs[@"hasCustomTransportFrame"] ? [prefs[@"hasCustomTransportFrame"] boolValue]: FALSE;
+    hasCustomTransportFrame = prefs[@"hasCustomTransportFrame"] ? [prefs[@"hasCustomTransportFrame"] boolValue]: NO;
     transportX = prefs[@"transportX"] ? [prefs[@"transportX"] floatValue] : 0;
     transportY = prefs[@"transportY"] ? [prefs[@"transportY"] floatValue] : 0;
     transportWidth = prefs[@"transportWidth"] ? [prefs[@"transportWidth"] floatValue] : 0;
@@ -306,7 +321,4 @@ static void prefsChanged(CFNotificationCenterRef center, void *observer, CFStrin
     loadPrefs();
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)prefsChanged, CFSTR("com.galacticdev.kumquatprefs.changed"), NULL, CFNotificationSuspensionBehaviorCoalesce);
     if(isEnabled) %init;
-    
-    RLog(@"isEnabled %d\n defaultLayout %d\n currentLayout %d\n layoutForNotifications %d\n switchIfNotifications %d\n notifications %d\n hideRouteButton %d\n hideArtwork %d\n hasCustomheaderFrame %d\n headerx %f\n headery %f\n headerwidth %f\n headerheight %f\n hascustomartframe %d\n artx %f\n arty %f\n artwidth %f\n artheight %f\n hascustomplayerheight %d\n playerheight %f\n hascustomvolumeframe %d\n volumex %f\n volumey %f\n volumewidth %f\n volumeheight %f\n hascustomscrubberframe %d\n scrubx %f\n scruby %f\n scrubwidth %f\n scrubheight %f\n hascustomtranpsrotframe %d\n transx %f\n transy %f\n transwidth %f\n transheight %f", isEnabled, defaultLayout, currentLayout, layoutForNotifications, switchIfNotifications, notifications, hideRouteButton, hideArtwork, hasCustomHeaderFrame, headerX, headerY, headerWidth, headerHeight, hasCustomArtworkFrame, artworkX, artworkY, artworkWidth, artworkHeight, hasCustomPlayerHeight, playerHeight, hasCustomVolumeBarFrame, volumeX, volumeY, volumeWidth, volumeHeight, hasCustomScrubberFrame, scrubberX, scrubberY, scrubberWidth, scrubberHeight, hasCustomTransportFrame, transportX, transportY, transportWidth, transportHeight);
-
 }

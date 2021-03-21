@@ -12,6 +12,7 @@ BOOL switchIfNotifications;
 
 BOOL hideRouteButton;
 BOOL hideArtwork;
+BOOL disableHeaderViewTouches;
 
 BOOL hasCustomHeaderFrame;
 CGFloat headerX;

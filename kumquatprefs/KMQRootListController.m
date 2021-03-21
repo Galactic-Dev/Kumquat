@@ -1,5 +1,5 @@
 #include "KMQRootListController.h"
-
+//WARNING BAD CODE ALERT
 @implementation KMQRootListController
 
 - (NSArray *)specifiers {
@@ -131,11 +131,10 @@
     
     [self updateSpecifierVisibility:NO];
     
-    UISwitch *enabledSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+    UISwitch *enabledSwitch = [[UISwitch alloc] init];
     [enabledSwitch addTarget:self action:@selector(enabledSwitchChanged:) forControlEvents:UIControlEventValueChanged];
     NSString *path = @"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist";
-    NSMutableDictionary *settings = [NSMutableDictionary dictionary];
-    [settings addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfFile:path]];
+    NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:path];
     NSNumber *isEnabled = [settings valueForKey:@"isEnabled"] ?: @1;
     if([isEnabled isEqual:@1]){
         [enabledSwitch setOn:YES animated:NO];
@@ -150,6 +149,8 @@
         self.navigationItem.titleView = self.titleView;
         self.titleView.superview.clipsToBounds = YES;
     }
+    
+    [self updateHeaderView];
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -176,8 +177,6 @@
         label.textAlignment = NSTextAlignmentCenter;
         [self.headerView addSubview:label];
         label.translatesAutoresizingMaskIntoConstraints = NO;
-        
-        [self updateHeaderView];
     }
     tableView.tableHeaderView = self.headerView;
     return [super tableView:tableView cellForRowAtIndexPath:indexPath];

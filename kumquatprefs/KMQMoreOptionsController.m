@@ -1,5 +1,5 @@
 #include "KMQMoreOptionsController.h"
-
+//WARNING BAD CODE ALERT
 @implementation KMQMoreOptionsController
 - (NSArray *)specifiers {
     if (!_specifiers) {
@@ -79,7 +79,6 @@
 
 -(void)reloadSpecifiers {
     [super reloadSpecifiers];
-    
     [self updateSpecifierVisibility:NO];
 }
 
@@ -112,11 +111,10 @@
     
     [self updateSpecifierVisibility:NO];
     
-    UISwitch *enabledSwitch = [[UISwitch alloc] initWithFrame:CGRectZero];
+    UISwitch *enabledSwitch = [[UISwitch alloc] init];
     [enabledSwitch addTarget:self action:@selector(enabledSwitchChanged:) forControlEvents:UIControlEventValueChanged];
     NSString *path = @"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist";
-    NSMutableDictionary *settings = [NSMutableDictionary dictionary];
-    [settings addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfFile:path]];
+    NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:path];
     NSNumber *isEnabled = [settings valueForKey:@"isEnabled"] ?: @1;
     if([isEnabled isEqual:@1]){
         [enabledSwitch setOn:YES animated:NO];

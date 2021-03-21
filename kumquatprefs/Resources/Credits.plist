@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>items</key>
+    <array>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>enabled</key>
+            <true/>
+            <key>footerText</key>
+            <string></string>
+            <key>label</key>
+            <string>Contact Info</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSButtonCell</string>
+            <key>cellClass</key>
+            <string>KMQCreditsCell</string>
+            <key>label</key>
+            <string>PayPal</string>
+            <key>detailLabel</key>
+            <string>Donations are appreciated</string>
+            <key>link</key>
+            <string>https://www.paypal.com/paypalme/DBrett684</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSButtonCell</string>
+            <key>cellClass</key>
+            <string>KMQCreditsCell</string>
+            <key>label</key>
+            <string>Twitter</string>
+            <key>detailLabel</key>
+            <string>For updates and support</string>
+            <key>link</key>
+            <string>twitter://user?screen_name=dev_galactic</string>
+            <key>isTwitter</key>
+            <true/>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSButtonCell</string>
+            <key>cellClass</key>
+            <string>KMQCreditsCell</string>
+            <key>label</key>
+            <string>Email</string>
+            <key>detailLabel</key>
+            <string>For support</string>
+            <key>link</key>
+            <string>mailto://devgalactic@gmail.com</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>enabled</key>
+            <true/>
+            <key>footerText</key>
+            <string></string>
+            <key>label</key>
+            <string>Credits</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSButtonCell</string>
+            <key>cellClass</key>
+            <string>KMQCreditsCell</string>
+            <key>label</key>
+            <string>Lacertosus</string>
+            <key>detailLabel</key>
+            <string>Animated Title View &amp; Dynamic Specifiers</string>
+            <key>link</key>
+            <string>twitter://user?screen_name=LacertosusDeus</string>
+            <key>isTwitter</key>
+            <true/>
+        </dict>
+    </array>
+    <key>title</key>
+    <string>Contact &amp; Credits</string>
+</dict>
+</plist>
+
