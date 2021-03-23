@@ -107,16 +107,11 @@ NSInteger currentLayout;
 %end
 
 %hook CSMediaControlsViewController
--(instancetype)init {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_layoutMediaControls) name:@"KumquatStyleChange" object:nil];
-    return %orig;
-}
--(void)dealloc {
-    %orig;
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"KumquatStyleChange" object:nil];
-}
 -(CGRect)_suggestedFrameForMediaControls {
     CGRect oldRect = %orig;
+    UIViewController *platterViewController = [self valueForKey:@"_platterViewController"];
+    MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)platterViewController.childViewControllers[0].view;
+    nowPlayingView.contentEdgeInsets = UIEdgeInsetsMake(16,16,16,16);
     if (hasCustomPlayerHeight) {
         return CGRectMake(0, 0, oldRect.size.width, playerHeight);
     }
@@ -126,8 +121,6 @@ NSInteger currentLayout;
         case 1: {
             self.view.superview.superview.frame = CGRectMake(24, 0, oldRect.size.width - 48, oldRect.size.height + 298 - 26);
             [(UIView *)[self.view.superview.superview valueForKey:@"_backgroundView"] layer].cornerRadius = 42;
-            UIViewController *platterViewController = [self valueForKey:@"_platterViewController"];
-            MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)platterViewController.childViewControllers[0].view;
             nowPlayingView.contentEdgeInsets = UIEdgeInsetsMake(24,24,24,24);
             return CGRectMake(0, 0, oldRect.size.width - 48, oldRect.size.height + 298 - 26);
         }
@@ -171,6 +164,9 @@ NSInteger currentLayout;
         
         if(hideArtwork) self.showArtworkView = NO;
         else self.showArtworkView = YES;
+    }
+    else {
+        %orig;
     }
 }
 -(BOOL)isUserInteractionEnabled {
