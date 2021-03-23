@@ -123,8 +123,14 @@ NSInteger currentLayout;
     switch (currentLayout) {
         case 0:
             return oldRect;
-        case 1:
-            return CGRectMake(0, 0, oldRect.size.width, oldRect.size.height + 200);
+        case 1: {
+            self.view.superview.superview.frame = CGRectMake(24, 0, oldRect.size.width - 48, oldRect.size.height + 298 - 26);
+            [(UIView *)[self.view.superview.superview valueForKey:@"_backgroundView"] layer].cornerRadius = 42;
+            UIViewController *platterViewController = [self valueForKey:@"_platterViewController"];
+            MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)platterViewController.childViewControllers[0].view;
+            nowPlayingView.contentEdgeInsets = UIEdgeInsetsMake(24,24,24,24);
+            return CGRectMake(0, 0, oldRect.size.width - 48, oldRect.size.height + 298 - 26);
+        }
         case 2:
             return CGRectMake(0, 0, oldRect.size.width, oldRect.size.height - 44);
         case 3:
@@ -178,7 +184,7 @@ NSInteger currentLayout;
 %hook MRUArtworkView
 //I would use the artworkOverrideFrame property of MRUNowPlayingHeaderView, but the frame only applies when using the Large layout
 -(void)setFrame:(CGRect)frame {
-    CGFloat xvalue = (self.superview.superview.frame.size.width - 200) / 2;
+    CGFloat xvalue = (self.superview.superview.frame.size.width - 298) / 2;
     
     MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview.superview;
     if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2) {
@@ -187,7 +193,7 @@ NSInteger currentLayout;
             return;
         }
         else if(nowPlayingView.layout == 2) {
-            %orig(CGRectMake(xvalue,0,200,200));
+            %orig(CGRectMake(xvalue,0,298,298));
             return;
         }
     }

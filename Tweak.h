@@ -84,6 +84,7 @@ CGFloat transportHeight;
 @property (strong, nonatomic) MRUNowPlayingControlsView *controlsView;
 @property (nonatomic, assign) NSInteger context;
 @property (nonatomic, assign) NSInteger layout;
+@property (nonatomic, assign) UIEdgeInsets contentEdgeInsets;
 @end 
 
 @interface CSMediaControlsViewController : UIViewController

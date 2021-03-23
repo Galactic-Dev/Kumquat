@@ -60,7 +60,7 @@
     CGFloat imageHeight = imageView.image.size.height * imageView.image.scale;
     CGFloat imageWidth = imageView.image.size.width * imageView.image.scale;
     
-    CGFloat newWidth = self.view.frame.size.width - 20;
+    CGFloat newWidth = self.view.frame.size.width - 100;
     if(newWidth > 556) newWidth = 556;
     CGFloat newHeight = (imageHeight * newWidth) / imageWidth;
     
@@ -78,7 +78,7 @@
 
     switch (defaultStyle) {
         case 1:
-            [label.centerYAnchor constraintEqualToAnchor:imageView.centerYAnchor constant:50].active = YES;
+            [label.centerYAnchor constraintEqualToAnchor:imageView.centerYAnchor constant:75].active = YES;
             [self.titleView setValue:@200 forKey:@"_minimumOffsetRequired"];
             break;
         default:
