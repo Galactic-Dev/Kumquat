@@ -112,17 +112,16 @@ NSInteger currentLayout;
     UIViewController *platterViewController = [self valueForKey:@"_platterViewController"];
     MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)platterViewController.childViewControllers[0].view;
     nowPlayingView.contentEdgeInsets = UIEdgeInsetsMake(16,16,16,16);
-    if (hasCustomPlayerHeight) {
-        return CGRectMake(0, 0, oldRect.size.width, playerHeight);
+    if (hasCustomPlayerFrame) {
+        self.view.superview.superview.frame = CGRectMake(playerX, playerY, playerWidth, playerHeight);
+        return CGRectMake(0, 0, playerWidth, playerHeight);
     }
     switch (currentLayout) {
         case 0:
             return oldRect;
         case 1: {
             self.view.superview.superview.frame = CGRectMake(24, 0, oldRect.size.width - 48, oldRect.size.height + 298 - 26);
-            [(UIView *)[self.view.superview.superview valueForKey:@"_backgroundView"] layer].cornerRadius = 42;
-            nowPlayingView.contentEdgeInsets = UIEdgeInsetsMake(24,24,24,24);
-            return CGRectMake(0, 0, oldRect.size.width - 48, oldRect.size.height + 298 - 26);
+            return CGRectMake(0, 0, oldRect.size.width - 48, oldRect.size.height + 298 - 26 + 10 /*padding so artwork doesn't overlap header view*/);
         }
         case 2:
             return CGRectMake(0, 0, oldRect.size.width, oldRect.size.height - 44);
@@ -132,6 +131,19 @@ NSInteger currentLayout;
             return CGRectMake(0, 0, oldRect.size.width, oldRect.size.height - 44 - 44);
     }
     return oldRect;
+}
+
+//temporary fix just testing trying to get stuff to work with other media player tweaks
+-(void)viewDidLayoutSubviews {
+    %orig;
+    switch (currentLayout) {
+        case 1: {
+            UIViewController *platterViewController = [self valueForKey:@"_platterViewController"];
+            MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)platterViewController.childViewControllers[0].view;
+            [(UIView *)[self.view.superview.superview valueForKey:@"_backgroundView"] layer].cornerRadius = 42;
+            nowPlayingView.contentEdgeInsets = UIEdgeInsetsMake(24,24,24,24);
+        }
+    }
 }
 %end
 
@@ -227,6 +239,18 @@ NSInteger currentLayout;
 }
 %end
 
+%hook MRUNowPlayingControlsView
+-(void)setFrame:(CGRect)frame {
+    %orig;
+    if(hideVolumeBar) {
+        self.volumeControlsView.hidden = YES;
+    }
+    if(hideScrubber) {
+        self.showTimeControlsView = NO;
+    }
+}
+%end
+
 %hook NCNotificationMasterList
 -(NSUInteger)notificationCount {
     NSUInteger retVal = %orig;
@@ -275,6 +299,8 @@ static void loadPrefs() {
     
     hideRouteButton = prefs[@"hideRouteButton"] ? [prefs[@"hideRouteButton"] boolValue] : NO;
     hideArtwork = prefs[@"hideArtwork"] ? [prefs[@"hideArtwork"] boolValue] : NO;
+    hideVolumeBar = prefs[@"hideVolumeBar"] ? [prefs[@"hideVolumeBar"] boolValue] : NO;
+    hideScrubber = prefs[@"hideScrubber"] ? [prefs[@"hideScrubber"] boolValue] : NO;
     disableHeaderViewTouches = prefs[@"disableHeaderViewTouches"] ? [prefs[@"disableHeaderViewTouches"] boolValue] : NO;
     
     hasCustomHeaderFrame = prefs[@"hasCustomHeaderFrame"] ? [prefs[@"hasCustomHeaderFrame"] boolValue] : NO;
@@ -291,7 +317,10 @@ static void loadPrefs() {
     artworkHeight = prefs[@"artworkHeight"] ? [prefs[@"artworkHeight"] floatValue] : 0;
 
     
-    hasCustomPlayerHeight = prefs[@"hasCustomPlayerHeight"] ? [prefs[@"hasCustomPlayerHeight"] boolValue] : NO;
+    hasCustomPlayerFrame = prefs[@"hasCustomPlayerFrame"] ? [prefs[@"hasCustomPlayerFrame"] boolValue] : NO;
+    playerX = prefs[@"playerX"] ? [prefs[@"playerX"] floatValue] : 0;
+    playerY = prefs[@"playerY"] ? [prefs[@"playerY"] floatValue] : 0;
+    playerWidth = prefs[@"playerWidth"] ? [prefs[@"playerWidth"] floatValue] : 0;
     playerHeight = prefs[@"playerHeight"] ? [prefs[@"playerHeight"] floatValue] : 0;
     
     hasCustomVolumeBarFrame = prefs[@"hasCustomVolumeBarFrame"] ? [prefs[@"hasCustomVolumeBarFrame"] boolValue]: NO;

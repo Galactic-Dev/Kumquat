@@ -57,6 +57,38 @@
             <key>enabled</key>
             <true/>
             <key>key</key>
+            <string>hideVolumeBar</string>
+            <key>label</key>
+            <string>Hide Volume Bar</string>
+            <key>default</key>
+            <false/>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>hideScrubber</string>
+            <key>label</key>
+            <string>Hide Scrub Bar</string>
+            <key>default</key>
+            <false/>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
             <string>disableHeaderViewTouches</string>
             <key>label</key>
             <string>Don't open music app when pressed</string>
@@ -301,24 +333,90 @@
 			<key>footerText</key>
 			<string></string>
 		</dict>
-		<dict>
-			<key>PostNotification</key>
-			<string>com.galacticdev.kumquatprefs.changed</string>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>defaults</key>
-			<string>com.galacticdev.kumquatprefs</string>
-			<key>enabled</key>
-			<true/>
-			<key>key</key>
-			<string>hasCustomPlayerHeight</string>
-			<key>label</key>
-			<string>Custom Player View Height</string>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>hasCustomPlayerFrame</string>
+            <key>label</key>
+            <string>Custom Player Frame</string>
             <key>default</key>
             <false/>
             <key>id</key>
-            <string>hasCustomPlayerHeight</string>
-		</dict>
+            <string>hasCustomPlayerFrame</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSEditTextCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>playerX</string>
+            <key>keyboard</key>
+            <string>numbers</string>
+            <key>label</key>
+            <string>X Value</string>
+            <key>placeholder</key>
+            <string>0</string>
+            <key>default</key>
+            <real>0</real>
+            <key>id</key>
+            <string>playerX</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSEditTextCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>playerY</string>
+            <key>keyboard</key>
+            <string>numbers</string>
+            <key>label</key>
+            <string>Y Value</string>
+            <key>placeholder</key>
+            <string>0</string>
+            <key>default</key>
+            <real>0</real>
+            <key>id</key>
+            <string>playerY</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSEditTextCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>playerWidth</string>
+            <key>keyboard</key>
+            <string>numbers</string>
+            <key>label</key>
+            <string>Width</string>
+            <key>placeholder</key>
+            <string>0</string>
+            <key>default</key>
+            <real>0</real>
+            <key>id</key>
+            <string>playerWidth</string>
+        </dict>
         <dict>
             <key>PostNotification</key>
             <string>com.galacticdev.kumquatprefs.changed</string>
@@ -423,9 +521,9 @@
             <key>label</key>
             <string>Width</string>
             <key>placeholder</key>
-            <string>0</string>
+            <string>44</string>
             <key>default</key>
-            <real>0</real>
+            <real>44</real>
             <key>id</key>
             <string>volumeWidth</string>
         </dict>
@@ -445,9 +543,9 @@
             <key>label</key>
             <string>Height</string>
             <key>placeholder</key>
-            <string>0</string>
+            <string>44</string>
             <key>default</key>
-            <real>0</real>
+            <real>44</real>
             <key>id</key>
             <string>volumeHeight</string>
         </dict>
@@ -533,9 +631,9 @@
             <key>label</key>
             <string>Width</string>
             <key>placeholder</key>
-            <string>0</string>
+            <string>44</string>
             <key>default</key>
-            <real>0</real>
+            <real>44</real>
             <key>id</key>
             <string>scrubberWidth</string>
         </dict>
@@ -555,9 +653,9 @@
             <key>label</key>
             <string>Height</string>
             <key>placeholder</key>
-            <string>0</string>
+            <string>44</string>
             <key>default</key>
-            <real>0</real>
+            <real>44</real>
             <key>id</key>
             <string>scrubberHeight</string>
         </dict>
@@ -645,9 +743,9 @@
             <key>label</key>
             <string>Width</string>
             <key>placeholder</key>
-            <string>0</string>
+            <string>44</string>
             <key>default</key>
-            <real>0</real>
+            <real>44</real>
             <key>id</key>
             <string>transportWidth</string>
         </dict>
@@ -667,9 +765,9 @@
             <key>label</key>
             <string>Height</string>
             <key>placeholder</key>
-            <string>0</string>
+            <string>44</string>
             <key>default</key>
-            <real>0</real>
+            <real>44</real>
             <key>id</key>
             <string>transportHeight</string>
         </dict>

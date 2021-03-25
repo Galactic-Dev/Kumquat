@@ -6,7 +6,7 @@
         _specifiers = [self loadSpecifiersFromPlistName:@"MoreOptions" target:self];
         
         
-        NSArray *chosenIDs = @[@"headerY", @"headerX", @"headerWidth", @"headerHeight", @"artworkX", @"artworkY", @"artworkWidth", @"artworkHeight", @"playerHeight", @"volumeX", @"volumeY", @"volumeWidth", @"volumeHeight", @"scrubberX", @"scrubberY", @"scrubberWidth", @"scrubberHeight", @"transportX", @"transportY", @"transportWidth", @"transportHeight"];
+        NSArray *chosenIDs = @[@"headerY", @"headerX", @"headerWidth", @"headerHeight", @"artworkX", @"artworkY", @"artworkWidth", @"artworkHeight", @"playerX", @"playerY", @"playerWidth", @"playerHeight", @"volumeX", @"volumeY", @"volumeWidth", @"volumeHeight", @"scrubberX", @"scrubberY", @"scrubberWidth", @"scrubberHeight", @"transportX", @"transportY", @"transportWidth", @"transportHeight"];
         self.savedSpecifiers = (self.savedSpecifiers) ?: [NSMutableDictionary dictionary];
         for(PSSpecifier *specifier in [self specifiersForIDs:chosenIDs]) {
             [self.savedSpecifiers setObject:specifier forKey:[specifier propertyForKey:@"id"]];
@@ -32,11 +32,11 @@
         [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"artworkX"], self.savedSpecifiers[@"artworkY"], self.savedSpecifiers[@"artworkWidth"], self.savedSpecifiers[@"artworkHeight"]] afterSpecifierID:@"hasCustomArtworkFrame" animated:animated];
     }
     
-    if(![prefs[@"hasCustomPlayerHeight"] boolValue]) {
-        [self removeSpecifier:self.savedSpecifiers[@"playerHeight"] animated:animated];
+    if(![prefs[@"hasCustomPlayerFrame"] boolValue]) {
+        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"playerX"], self.savedSpecifiers[@"playerY"], self.savedSpecifiers[@"playerWidth"], self.savedSpecifiers[@"playerHeight"]] animated:animated];
     }
-    else if(![self containsSpecifier:self.savedSpecifiers[@"playerHeight"]]) {
-        [self insertSpecifier:self.savedSpecifiers[@"playerHeight"] afterSpecifierID:@"hasCustomPlayerHeight" animated:animated];
+    else if(![self containsSpecifier:self.savedSpecifiers[@"playerX"]]) {
+        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"playerX"], self.savedSpecifiers[@"playerY"], self.savedSpecifiers[@"playerWidth"], self.savedSpecifiers[@"playerHeight"]] afterSpecifierID:@"hasCustomPlayerFrame" animated:animated];
     }
     
     if(![prefs[@"hasCustomVolumeBarFrame"] boolValue]) {

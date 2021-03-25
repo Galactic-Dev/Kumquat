@@ -13,7 +13,7 @@
             <key>footerText</key>
             <string>The only option that requires a respring is enabling/disabling the tweak</string>
             <key>label</key>
-            <string></string>
+            <string> </string><!--have to have text in the label or the footerText gets overlapped by the headerView -->
         </dict>
 		<dict>
 			<key>cell</key>

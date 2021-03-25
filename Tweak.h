@@ -12,6 +12,8 @@ BOOL switchIfNotifications;
 
 BOOL hideRouteButton;
 BOOL hideArtwork;
+BOOL hideVolumeBar;
+BOOL hideScrubber;
 BOOL disableHeaderViewTouches;
 
 BOOL hasCustomHeaderFrame;
@@ -26,7 +28,10 @@ CGFloat artworkY;
 CGFloat artworkWidth;
 CGFloat artworkHeight;
 
-BOOL hasCustomPlayerHeight;
+BOOL hasCustomPlayerFrame;
+CGFloat playerX;
+CGFloat playerY;
+CGFloat playerWidth;
 CGFloat playerHeight;
 
 BOOL hasCustomVolumeBarFrame;
@@ -119,6 +124,7 @@ CGFloat transportHeight;
 @property (nonatomic,retain) NSMutableDictionary * identifiersToItems;
 @property (strong, nonatomic) UIStackView *stackView;
 @property (strong, nonatomic) CSAdjunctListView *view;
+-(void)_updatePresentingContent;
 @end
 
 @interface NCNotificationStructuredListViewController : UIViewController
