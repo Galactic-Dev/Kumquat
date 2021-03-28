@@ -543,7 +543,7 @@
             <key>label</key>
             <string>Height</string>
             <key>placeholder</key>
-            <string>44</string>
+            <string>0</string>
             <key>default</key>
             <real>44</real>
             <key>id</key>
@@ -653,7 +653,7 @@
             <key>label</key>
             <string>Height</string>
             <key>placeholder</key>
-            <string>44</string>
+            <string>0</string>
             <key>default</key>
             <real>44</real>
             <key>id</key>
@@ -765,7 +765,7 @@
             <key>label</key>
             <string>Height</string>
             <key>placeholder</key>
-            <string>44</string>
+            <string>0</string>
             <key>default</key>
             <real>44</real>
             <key>id</key>

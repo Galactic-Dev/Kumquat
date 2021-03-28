@@ -76,6 +76,20 @@
             <key>isTwitter</key>
             <true/>
         </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSButtonCell</string>
+            <key>cellClass</key>
+            <string>KMQCreditsCell</string>
+            <key>label</key>
+            <string>King_Star</string>
+            <key>detailLabel</key>
+            <string>Created the icon for this tweak</string>
+            <key>link</key>
+            <string>twitter://user?screen_name=LaDDiBrAr619</string>
+            <key>isTwitter</key>
+            <true/>
+        </dict>
     </array>
     <key>title</key>
     <string>Contact &amp; Credits</string>

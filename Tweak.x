@@ -120,8 +120,8 @@ NSInteger currentLayout;
         case 0:
             return oldRect;
         case 1: {
-            self.view.superview.superview.frame = CGRectMake(24, 0, oldRect.size.width - 48, oldRect.size.height + 298 - 26);
-            return CGRectMake(0, 0, oldRect.size.width - 48, oldRect.size.height + 298 - 26 + 10 /*padding so artwork doesn't overlap header view*/);
+            self.view.superview.superview.frame = CGRectMake(24, 0, oldRect.size.width - 48, oldRect.size.height + 298);
+            return CGRectMake(0, 0, oldRect.size.width - 48, oldRect.size.height + 298);
         }
         case 2:
             return CGRectMake(0, 0, oldRect.size.width, oldRect.size.height - 44);
@@ -192,20 +192,22 @@ NSInteger currentLayout;
 %hook MRUArtworkView
 //I would use the artworkOverrideFrame property of MRUNowPlayingHeaderView, but the frame only applies when using the Large layout
 -(void)setFrame:(CGRect)frame {
+    CGRect newFrame = frame;
     CGFloat xvalue = (self.superview.superview.frame.size.width - 298) / 2;
     
     MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview.superview;
     if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2) {
         if(hasCustomArtworkFrame) {
-            %orig(CGRectMake(artworkX, artworkY, artworkWidth, artworkHeight));
-            return;
+            newFrame = CGRectMake(artworkX, artworkY, artworkWidth, artworkHeight);
         }
         else if(nowPlayingView.layout == 2) {
-            %orig(CGRectMake(xvalue,0,298,298));
-            return;
+            newFrame = CGRectMake(xvalue,0,298,298);
+        }
+        if(hasCustomHeaderFrame) {
+            newFrame = CGRectMake(newFrame.origin.x - headerX, newFrame.origin.y - headerY, newFrame.size.width, newFrame.size.height);
         }
     }
-    %orig;
+    %orig(newFrame);
 }
 %end
 
@@ -327,20 +329,20 @@ static void loadPrefs() {
     volumeX = prefs[@"volumeX"] ? [prefs[@"volumeX"] floatValue] : 0;
     volumeY = prefs[@"volumeY"] ? [prefs[@"volumeY"] floatValue] : 0;
     volumeWidth = prefs[@"volumeWidth"] ? [prefs[@"volumeWidth"] floatValue] : 0;
-    volumeHeight = prefs[@"volumeHeight"] ? [prefs[@"volumeHeight"] floatValue] : 0;
+    volumeHeight = prefs[@"volumeHeight"] ? [prefs[@"volumeHeight"] floatValue] : 44;
 
     
     hasCustomScrubberFrame = prefs[@"hasCustomScrubberFrame"] ? [prefs [@"hasCustomScrubberFrame"] boolValue]: NO;
     scrubberX = prefs[@"scrubberX"] ? [prefs[@"scrubberX"] floatValue] : 0;
     scrubberY = prefs[@"scrubberY"] ? [prefs[@"scrubberY"] floatValue] : 0;
     scrubberWidth = prefs[@"scrubberWidth"] ? [prefs[@"scrubberWidth"] floatValue] : 0;
-    scrubberHeight = prefs[@"scrubberHeight"] ? [prefs[@"scrubberHeight"] floatValue] : 0;
+    scrubberHeight = prefs[@"scrubberHeight"] ? [prefs[@"scrubberHeight"] floatValue] : 44;
     
     hasCustomTransportFrame = prefs[@"hasCustomTransportFrame"] ? [prefs[@"hasCustomTransportFrame"] boolValue]: NO;
     transportX = prefs[@"transportX"] ? [prefs[@"transportX"] floatValue] : 0;
     transportY = prefs[@"transportY"] ? [prefs[@"transportY"] floatValue] : 0;
     transportWidth = prefs[@"transportWidth"] ? [prefs[@"transportWidth"] floatValue] : 0;
-    transportHeight = prefs[@"transportHeight"] ? [prefs[@"transportHeight"] floatValue] : 0;
+    transportHeight = prefs[@"transportHeight"] ? [prefs[@"transportHeight"] floatValue] : 44;
 }
 
 static void prefsChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
@@ -352,4 +354,8 @@ static void prefsChanged(CFNotificationCenterRef center, void *observer, CFStrin
     loadPrefs();
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)prefsChanged, CFSTR("com.galacticdev.kumquatprefs.changed"), NULL, CFNotificationSuspensionBehaviorCoalesce);
     if(isEnabled) %init;
+}
+
+%dtor {
+    CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, CFSTR("com.galacticdev.kumquatprefs.changed"), NULL);
 }

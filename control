@@ -1,6 +1,6 @@
 Package: com.galacticdev.kumquat
 Name: Kumquat
-Version: 1.0~beta5
+Version: 1.0~beta6
 Architecture: iphoneos-arm
 Description: Customize your lockscreen music player on iOS 14.2+
 Maintainer: Galactic Dev <devgalactic@gmail.com>
