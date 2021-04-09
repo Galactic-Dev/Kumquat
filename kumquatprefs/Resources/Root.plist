@@ -173,6 +173,18 @@
             <key>label</key>
             <string>Contact &amp; Credits</string>
         </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSButtonCell</string>
+            <key>label</key>
+            <string>Tweak Info</string>
+            <key>action</key>
+            <string>setupWelcomeController</string>
+        </dict>
 	</array>
 	<key>title</key>
 	<string>Kumquat</string>

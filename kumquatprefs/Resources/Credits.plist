@@ -50,7 +50,7 @@
             <key>detailLabel</key>
             <string>For support</string>
             <key>link</key>
-            <string>mailto://devgalactic@gmail.com</string>
+            <string>mailto:devgalactic@gmail.com</string>
         </dict>
         <dict>
             <key>cell</key>
@@ -87,6 +87,20 @@
             <string>Created the icon for this tweak</string>
             <key>link</key>
             <string>twitter://user?screen_name=LaDDiBrAr619</string>
+            <key>isTwitter</key>
+            <true/>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSButtonCell</string>
+            <key>cellClass</key>
+            <string>KMQCreditsCell</string>
+            <key>label</key>
+            <string>Simalary (Chris)</string>
+            <key>detailLabel</key>
+            <string>OBWelcomeController</string>
+            <key>link</key>
+            <string>twitter://user?screen_name=simalary_ch</string>
             <key>isTwitter</key>
             <true/>
         </dict>

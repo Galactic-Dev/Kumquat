@@ -11,9 +11,9 @@
 			<key>enabled</key>
 			<true/>
 			<key>footerText</key>
-			<string></string>
+			<string>Default: 13 or 42 for large style</string>
 			<key>label</key>
-			<string>Show/Hide Elements</string>
+			<string>Miscellaneous</string>
 		</dict>
 		<dict>
 			<key>PostNotification</key>
@@ -47,6 +47,22 @@
             <key>default</key>
             <false/>
 		</dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>hideIconView</string>
+            <key>label</key>
+            <string>Hide App Icon on Artwork</string>
+            <key>default</key>
+            <false/>
+        </dict>
         <dict>
             <key>PostNotification</key>
             <string>com.galacticdev.kumquatprefs.changed</string>
@@ -94,17 +110,94 @@
             <string>Don't open music app when pressed</string>
             <key>default</key>
             <false/>
+            <key>id</key>
+            <string>disableHeaderViewTouches</string>
         </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>disableHeaderViewTouchesArtwork</string>
+            <key>label</key>
+            <string>Disable on artwork</string>
+            <key>default</key>
+            <true/>
+            <key>id</key>
+            <string>disableHeaderViewTouchesArtwork</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>disableHeaderViewTouchesText</string>
+            <key>label</key>
+            <string>Disable on text</string>
+            <key>default</key>
+            <true/>
+            <key>id</key>
+            <string>disableHeaderViewTouchesText</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>removeBackground</string>
+            <key>label</key>
+            <string>Remove Player Background</string>
+            <key>default</key>
+            <false/>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSEditTextCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>customCornerRadius</string>
+            <key>label</key>
+            <string>Custom Corner Radius</string>
+            <key>default</key>
+            <real>-1</real>
+            <key>keyboard</key>
+            <string>numbers</string>
+        </dict>
+
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>enabled</key>
 			<true/>
 			<key>footerText</key>
-			<string></string>
+			<string>Set value to -1 to keep default</string>
 			<key>label</key>
 			<string>Custom Frames</string>
 		</dict>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+        </dict>
 		<dict>
 			<key>PostNotification</key>
 			<string>com.galacticdev.kumquatprefs.changed</string>
@@ -123,6 +216,61 @@
             <key>id</key>
             <string>hasCustomHeaderFrame</string>
 		</dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSegmentCell</string>
+            <key>cellClass</key>
+            <string>KMQSegmentWithInfoCell</string>
+            <key>infoTitle</key>
+            <string>Absolute v. Relative</string>
+            <key>infoIcon</key>
+            <string>perspective</string>
+            <key>isInfoIconSystemImage</key>
+            <true/>
+            <key>infoBulletItems</key>
+            <array>
+                <dict>
+                    <key>title</key>
+                    <string>Absolute</string>
+                    <key>description</key>
+                    <string>This option will set the frame as if its original values were all zero.</string>
+                    <key>image</key>
+                    <string>a.circle.fill</string>
+                    <key>isSystemImage</key>
+                    <true/>
+                </dict>
+                <dict>
+                    <key>title</key>
+                    <string>Relative</string>
+                    <key>description</key>
+                    <string>This option will add your values to the original frame.</string>
+                    <key>image</key>
+                    <string>r.circle.fill</string>
+                    <key>isSystemImage</key>
+                    <true/>
+                </dict>
+            </array>
+            <key>default</key>
+            <integer>0</integer>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>key</key>
+            <string>headerFrameOption</string>
+            <key>validValues</key>
+            <array>
+                <integer>0</integer>
+                <integer>1</integer>
+            </array>
+            <key>validTitles</key>
+            <array>
+                <string>Absolute</string>
+                <string>Relative</string>
+            </array>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>id</key>
+            <string>headerFrameOption</string>
+        </dict>
 		<dict>
 			<key>PostNotification</key>
 			<string>com.galacticdev.kumquatprefs.changed</string>
@@ -237,6 +385,61 @@
             <key>id</key>
             <string>hasCustomArtworkFrame</string>
 		</dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSegmentCell</string>
+            <key>cellClass</key>
+            <string>KMQSegmentWithInfoCell</string>
+            <key>infoTitle</key>
+            <string>Absolute v. Relative</string>
+            <key>infoIcon</key>
+            <string>perspective</string>
+            <key>isInfoIconSystemImage</key>
+            <true/>
+            <key>infoBulletItems</key>
+            <array>
+                <dict>
+                    <key>title</key>
+                    <string>Absolute</string>
+                    <key>description</key>
+                    <string>This option will set the frame as if its original values were all zero.</string>
+                    <key>image</key>
+                    <string>a.circle.fill</string>
+                    <key>isSystemImage</key>
+                    <true/>
+                </dict>
+                <dict>
+                    <key>title</key>
+                    <string>Relative</string>
+                    <key>description</key>
+                    <string>This option will add your values to the original frame.</string>
+                    <key>image</key>
+                    <string>r.circle.fill</string>
+                    <key>isSystemImage</key>
+                    <true/>
+                </dict>
+            </array>
+            <key>default</key>
+            <integer>0</integer>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>key</key>
+            <string>artworkFrameOption</string>
+            <key>validValues</key>
+            <array>
+                <integer>0</integer>
+                <integer>1</integer>
+            </array>
+            <key>validTitles</key>
+            <array>
+                <string>Absolute</string>
+                <string>Relative</string>
+            </array>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>id</key>
+            <string>artworkFrameOption</string>
+        </dict>
 		<dict>
 			<key>PostNotification</key>
 			<string>com.galacticdev.kumquatprefs.changed</string>
@@ -352,6 +555,61 @@
             <string>hasCustomPlayerFrame</string>
         </dict>
         <dict>
+            <key>cell</key>
+            <string>PSSegmentCell</string>
+            <key>cellClass</key>
+            <string>KMQSegmentWithInfoCell</string>
+            <key>infoTitle</key>
+            <string>Absolute v. Relative</string>
+            <key>infoIcon</key>
+            <string>perspective</string>
+            <key>isInfoIconSystemImage</key>
+            <true/>
+            <key>infoBulletItems</key>
+            <array>
+                <dict>
+                    <key>title</key>
+                    <string>Absolute</string>
+                    <key>description</key>
+                    <string>This option will set the frame as if its original values were all zero.</string>
+                    <key>image</key>
+                    <string>a.circle.fill</string>
+                    <key>isSystemImage</key>
+                    <true/>
+                </dict>
+                <dict>
+                    <key>title</key>
+                    <string>Relative</string>
+                    <key>description</key>
+                    <string>This option will add your values to the original frame.</string>
+                    <key>image</key>
+                    <string>r.circle.fill</string>
+                    <key>isSystemImage</key>
+                    <true/>
+                </dict>
+            </array>
+            <key>default</key>
+            <integer>0</integer>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>key</key>
+            <string>playerFrameOption</string>
+            <key>validValues</key>
+            <array>
+                <integer>0</integer>
+                <integer>1</integer>
+            </array>
+            <key>validTitles</key>
+            <array>
+                <string>Absolute</string>
+                <string>Relative</string>
+            </array>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>id</key>
+            <string>playerFrameOption</string>
+        </dict>
+        <dict>
             <key>PostNotification</key>
             <string>com.galacticdev.kumquatprefs.changed</string>
             <key>cell</key>
@@ -462,6 +720,61 @@
             <string>hasCustomVolumeBarFrame</string>
         </dict>
         <dict>
+            <key>cell</key>
+            <string>PSSegmentCell</string>
+            <key>cellClass</key>
+            <string>KMQSegmentWithInfoCell</string>
+            <key>infoTitle</key>
+            <string>Absolute v. Relative</string>
+            <key>infoIcon</key>
+            <string>perspective</string>
+            <key>isInfoIconSystemImage</key>
+            <true/>
+            <key>infoBulletItems</key>
+            <array>
+                <dict>
+                    <key>title</key>
+                    <string>Absolute</string>
+                    <key>description</key>
+                    <string>This option will set the frame as if its original values were all zero.</string>
+                    <key>image</key>
+                    <string>a.circle.fill</string>
+                    <key>isSystemImage</key>
+                    <true/>
+                </dict>
+                <dict>
+                    <key>title</key>
+                    <string>Relative</string>
+                    <key>description</key>
+                    <string>This option will add your values to the original frame.</string>
+                    <key>image</key>
+                    <string>r.circle.fill</string>
+                    <key>isSystemImage</key>
+                    <true/>
+                </dict>
+            </array>
+            <key>default</key>
+            <integer>0</integer>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>key</key>
+            <string>volumeFrameOption</string>
+            <key>validValues</key>
+            <array>
+                <integer>0</integer>
+                <integer>1</integer>
+            </array>
+            <key>validTitles</key>
+            <array>
+                <string>Absolute</string>
+                <string>Relative</string>
+            </array>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>id</key>
+            <string>volumeFrameOption</string>
+        </dict>
+        <dict>
             <key>PostNotification</key>
             <string>com.galacticdev.kumquatprefs.changed</string>
             <key>cell</key>
@@ -521,9 +834,9 @@
             <key>label</key>
             <string>Width</string>
             <key>placeholder</key>
-            <string>44</string>
+            <string>0</string>
             <key>default</key>
-            <real>44</real>
+            <real>0</real>
             <key>id</key>
             <string>volumeWidth</string>
         </dict>
@@ -543,7 +856,7 @@
             <key>label</key>
             <string>Height</string>
             <key>placeholder</key>
-            <string>0</string>
+            <string>44</string>
             <key>default</key>
             <real>44</real>
             <key>id</key>
@@ -572,6 +885,61 @@
             <string>hasCustomScrubberFrame</string>
         </dict>
         <dict>
+            <key>cell</key>
+            <string>PSSegmentCell</string>
+            <key>cellClass</key>
+            <string>KMQSegmentWithInfoCell</string>
+            <key>infoTitle</key>
+            <string>Absolute v. Relative</string>
+            <key>infoIcon</key>
+            <string>perspective</string>
+            <key>isInfoIconSystemImage</key>
+            <true/>
+            <key>infoBulletItems</key>
+            <array>
+                <dict>
+                    <key>title</key>
+                    <string>Absolute</string>
+                    <key>description</key>
+                    <string>This option will set the frame as if its original values were all zero.</string>
+                    <key>image</key>
+                    <string>a.circle.fill</string>
+                    <key>isSystemImage</key>
+                    <true/>
+                </dict>
+                <dict>
+                    <key>title</key>
+                    <string>Relative</string>
+                    <key>description</key>
+                    <string>This option will add your values to the original frame.</string>
+                    <key>image</key>
+                    <string>r.circle.fill</string>
+                    <key>isSystemImage</key>
+                    <true/>
+                </dict>
+            </array>
+            <key>default</key>
+            <integer>0</integer>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>key</key>
+            <string>scrubberFrameOption</string>
+            <key>validValues</key>
+            <array>
+                <integer>0</integer>
+                <integer>1</integer>
+            </array>
+            <key>validTitles</key>
+            <array>
+                <string>Absolute</string>
+                <string>Relative</string>
+            </array>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>id</key>
+            <string>scrubberFrameOption</string>
+        </dict>
+        <dict>
             <key>PostNotification</key>
             <string>com.galacticdev.kumquatprefs.changed</string>
             <key>cell</key>
@@ -631,9 +999,9 @@
             <key>label</key>
             <string>Width</string>
             <key>placeholder</key>
-            <string>44</string>
+            <string>0</string>
             <key>default</key>
-            <real>44</real>
+            <real>0</real>
             <key>id</key>
             <string>scrubberWidth</string>
         </dict>
@@ -653,7 +1021,7 @@
             <key>label</key>
             <string>Height</string>
             <key>placeholder</key>
-            <string>0</string>
+            <string>44</string>
             <key>default</key>
             <real>44</real>
             <key>id</key>
@@ -684,6 +1052,61 @@
             <string>hasCustomTransportFrame</string>
         </dict>
         <dict>
+            <key>cell</key>
+            <string>PSSegmentCell</string>
+            <key>cellClass</key>
+            <string>KMQSegmentWithInfoCell</string>
+            <key>infoTitle</key>
+            <string>Absolute v. Relative</string>
+            <key>infoIcon</key>
+            <string>perspective</string>
+            <key>isInfoIconSystemImage</key>
+            <true/>
+            <key>infoBulletItems</key>
+            <array>
+                <dict>
+                    <key>title</key>
+                    <string>Absolute</string>
+                    <key>description</key>
+                    <string>This option will set the frame as if its original values were all zero.</string>
+                    <key>image</key>
+                    <string>a.circle.fill</string>
+                    <key>isSystemImage</key>
+                    <true/>
+                </dict>
+                <dict>
+                    <key>title</key>
+                    <string>Relative</string>
+                    <key>description</key>
+                    <string>This option will add your values to the original frame.</string>
+                    <key>image</key>
+                    <string>r.circle.fill</string>
+                    <key>isSystemImage</key>
+                    <true/>
+                </dict>
+            </array>
+            <key>default</key>
+            <integer>0</integer>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>key</key>
+            <string>transportFrameOption</string>
+            <key>validValues</key>
+            <array>
+                <integer>0</integer>
+                <integer>1</integer>
+            </array>
+            <key>validTitles</key>
+            <array>
+                <string>Absolute</string>
+                <string>Relative</string>
+            </array>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>id</key>
+            <string>transportFrameOption</string>
+        </dict>
+        <dict>
             <key>PostNotification</key>
             <string>com.galacticdev.kumquatprefs.changed</string>
             <key>cell</key>
@@ -743,9 +1166,9 @@
             <key>label</key>
             <string>Width</string>
             <key>placeholder</key>
-            <string>44</string>
+            <string>0</string>
             <key>default</key>
-            <real>44</real>
+            <real>0</real>
             <key>id</key>
             <string>transportWidth</string>
         </dict>
@@ -765,7 +1188,7 @@
             <key>label</key>
             <string>Height</string>
             <key>placeholder</key>
-            <string>0</string>
+            <string>44</string>
             <key>default</key>
             <real>44</real>
             <key>id</key>

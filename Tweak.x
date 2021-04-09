@@ -4,6 +4,23 @@ CSNotificationAdjunctListViewController *adjunctListController;
 BOOL notifications = NO;
 NSInteger currentLayout;
 
+static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger frameOption) {
+    NSMutableArray *mutableValues = values.mutableCopy;
+    for(int i = 0; i < values.count; i++) {
+        NSNumber *value = values[i];
+        if([value intValue] == -1) {
+            [mutableValues replaceObjectAtIndex:i withObject:originalValues[i]];
+        }
+        if(frameOption == 1 /*relative option*/) {
+            CGFloat originalValue = [originalValues[i] floatValue];
+            CGFloat valueToAdd = [values[i] floatValue];
+            [mutableValues replaceObjectAtIndex:i withObject:@(originalValue + valueToAdd)];
+        }
+    }
+    values = mutableValues.copy;
+    return CGRectMake([values[0] floatValue], [values[1] floatValue], [values[2] floatValue], [values[3] floatValue]);
+}
+
 %hook MRUNowPlayingView
 -(void)setContext:(NSInteger)context {
     %orig;
@@ -113,8 +130,33 @@ NSInteger currentLayout;
     MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)platterViewController.childViewControllers[0].view;
     nowPlayingView.contentEdgeInsets = UIEdgeInsetsMake(16,16,16,16);
     if (hasCustomPlayerFrame) {
-        self.view.superview.superview.frame = CGRectMake(playerX, playerY, playerWidth, playerHeight);
-        return CGRectMake(0, 0, playerWidth, playerHeight);
+        NSArray *rect = @[@(playerX), @(playerY), @(playerWidth), @(playerHeight)];
+        NSArray *originalRect;
+        switch (currentLayout) {
+            case 0: {
+                originalRect = @[@(oldRect.origin.x), @(oldRect.origin.y), @(oldRect.size.width), @(oldRect.size.height)];
+                break;
+            }
+            case 1: {
+                originalRect = @[@(oldRect.origin.x + 24), @(oldRect.origin.y), @(oldRect.size.width - 48), @(oldRect.size.height + 298)];
+                break;
+            }
+            case 2: {
+                originalRect = @[@(oldRect.origin.x), @(oldRect.origin.y), @(oldRect.size.width), @(oldRect.size.height - 44)];
+                break;
+            }
+            case 3: {
+                originalRect = @[@(oldRect.origin.x), @(oldRect.origin.y), @(oldRect.size.width ), @(oldRect.size.height - 44 - 44)];
+                break;
+            }
+            case 4: {
+                originalRect = @[@(oldRect.origin.x), @(oldRect.origin.y), @(oldRect.size.width ), @(oldRect.size.height - 44 - 44)];
+                break;
+            }
+        }
+        CGRect newRect = rectWithValues(rect, originalRect, playerFrameOption);
+        self.view.superview.superview.frame = newRect;
+        return CGRectMake(0, 0, newRect.size.width, newRect.size.height);
     }
     switch (currentLayout) {
         case 0:
@@ -136,13 +178,19 @@ NSInteger currentLayout;
 //temporary fix just testing trying to get stuff to work with other media player tweaks
 -(void)viewDidLayoutSubviews {
     %orig;
+    UIViewController *platterViewController = [self valueForKey:@"_platterViewController"];
+    MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)platterViewController.childViewControllers[0].view;
     switch (currentLayout) {
         case 1: {
-            UIViewController *platterViewController = [self valueForKey:@"_platterViewController"];
-            MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)platterViewController.childViewControllers[0].view;
             [(UIView *)[self.view.superview.superview valueForKey:@"_backgroundView"] layer].cornerRadius = 42;
             nowPlayingView.contentEdgeInsets = UIEdgeInsetsMake(24,24,24,24);
         }
+    }
+    if(customCornerRadius != -1) {
+        [(UIView *)[self.view.superview.superview valueForKey:@"_backgroundView"] layer].cornerRadius = customCornerRadius;
+    }
+    if(removeBackground) {
+        [(UIView *)[self.view.superview.superview valueForKey:@"_backgroundView"] setHidden:YES];
     }
 }
 %end
@@ -161,7 +209,9 @@ NSInteger currentLayout;
         MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview;
         if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2) {
             if(hasCustomHeaderFrame) {
-                %orig(CGRectMake(headerX, headerY, headerWidth, headerHeight));
+                NSArray *rect = @[@(headerX), @(headerY), @(headerWidth), @(headerHeight)];
+                NSArray *originalRect = @[@(frame.origin.x), @(frame.origin.y), @(frame.size.width), @(frame.size.height)];
+                %orig(rectWithValues(rect, originalRect, headerFrameOption));
                 return;
             }
         }
@@ -181,9 +231,17 @@ NSInteger currentLayout;
         %orig;
     }
 }
--(BOOL)isUserInteractionEnabled {
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
     if(disableHeaderViewTouches) {
-        return NO;
+        CGPoint artworkPoint = [self convertPoint:point toView:self.artworkView];
+        CGPoint textPoint = [self convertPoint:point toView:self.labelView];
+        
+        if(disableHeaderViewTouchesArtwork && CGRectContainsPoint(self.artworkView.bounds, artworkPoint)) {
+            return nil;
+        }
+        if(disableHeaderViewTouchesText && CGRectContainsPoint(self.labelView.bounds, textPoint)) {
+            return nil;
+        }
     }
     return %orig;
 }
@@ -198,13 +256,19 @@ NSInteger currentLayout;
     MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview.superview;
     if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2) {
         if(hasCustomArtworkFrame) {
-            newFrame = CGRectMake(artworkX, artworkY, artworkWidth, artworkHeight);
+            NSArray *rect = @[@(artworkX), @(artworkY), @(artworkWidth), @(artworkHeight)];
+            NSArray *originalRect = @[@(frame.origin.x), @(frame.origin.y), @(frame.size.width), @(frame.size.height)];
+            newFrame = rectWithValues(rect, originalRect, artworkFrameOption);
         }
         else if(nowPlayingView.layout == 2) {
             newFrame = CGRectMake(xvalue,0,298,298);
         }
         if(hasCustomHeaderFrame) {
             newFrame = CGRectMake(newFrame.origin.x - headerX, newFrame.origin.y - headerY, newFrame.size.width, newFrame.size.height);
+        }
+        if(hideIconView) {
+            self.iconShadowView.hidden = YES;
+            self.iconView.hidden = YES;
         }
     }
     %orig(newFrame);
@@ -215,7 +279,9 @@ NSInteger currentLayout;
 -(void)setFrame:(CGRect)frame {
     MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview;
     if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2 && hasCustomVolumeBarFrame) {
-        %orig(CGRectMake(volumeX, volumeY, volumeWidth, volumeHeight));
+        NSArray *rect = @[@(volumeX), @(volumeY), @(volumeWidth), @(volumeHeight)];
+        NSArray *originalRect = @[@(frame.origin.x), @(frame.origin.y), @(frame.size.width), @(frame.size.height)];
+        %orig(rectWithValues(rect, originalRect, volumeFrameOption));
     }
     else %orig;
 }
@@ -225,7 +291,9 @@ NSInteger currentLayout;
 -(void)setFrame:(CGRect)frame {
     MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview;
     if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2 && hasCustomScrubberFrame) {
-        %orig(CGRectMake(scrubberX, scrubberY, scrubberWidth, scrubberHeight));
+        NSArray *rect = @[@(scrubberX), @(scrubberY), @(scrubberWidth), @(scrubberHeight)];
+        NSArray *originalRect = @[@(frame.origin.x), @(frame.origin.y), @(frame.size.width), @(frame.size.height)];
+        %orig(rectWithValues(rect, originalRect, scrubberFrameOption));
     }
     else %orig;
 }
@@ -235,7 +303,9 @@ NSInteger currentLayout;
 -(void)setFrame:(CGRect)frame {
     MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview;
     if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2 && hasCustomTransportFrame) {
-        %orig(CGRectMake(transportX, transportY, transportWidth, transportHeight));
+        NSArray *rect = @[@(transportX), @(transportY), @(transportWidth), @(transportHeight)];
+        NSArray *originalRect = @[@(frame.origin.x), @(frame.origin.y), @(frame.size.width), @(frame.size.height)];
+        %orig(rectWithValues(rect, originalRect, transportFrameOption));
     }
     else %orig;
 }
@@ -301,11 +371,18 @@ static void loadPrefs() {
     
     hideRouteButton = prefs[@"hideRouteButton"] ? [prefs[@"hideRouteButton"] boolValue] : NO;
     hideArtwork = prefs[@"hideArtwork"] ? [prefs[@"hideArtwork"] boolValue] : NO;
+    hideIconView = prefs[@"hideIconView"] ? [prefs[@"hideIconView"] boolValue] : NO;
     hideVolumeBar = prefs[@"hideVolumeBar"] ? [prefs[@"hideVolumeBar"] boolValue] : NO;
     hideScrubber = prefs[@"hideScrubber"] ? [prefs[@"hideScrubber"] boolValue] : NO;
     disableHeaderViewTouches = prefs[@"disableHeaderViewTouches"] ? [prefs[@"disableHeaderViewTouches"] boolValue] : NO;
+    disableHeaderViewTouchesArtwork = prefs[@"disableHeaderViewTouchesArtwork"] ? [prefs[@"disableHeaderViewTouchesArtwork"] boolValue] : YES;
+    disableHeaderViewTouchesText = prefs[@"disableHeaderViewTouchesText"] ? [prefs[@"disableHeaderViewTouchesText"] boolValue] : YES;
+
+    removeBackground = prefs[@"removeBackground"] ? [prefs[@"removeBackground"] boolValue] : NO;
+    customCornerRadius = prefs[@"customCornerRadius"] && ![prefs[@"customCornerRadius"] isEqualToString:@""]? [prefs[@"customCornerRadius"] floatValue] : -1;
     
     hasCustomHeaderFrame = prefs[@"hasCustomHeaderFrame"] ? [prefs[@"hasCustomHeaderFrame"] boolValue] : NO;
+    headerFrameOption = prefs[@"headerFrameOption"] ? [prefs[@"headerFrameOption"] intValue] : 0;
     headerX = prefs[@"headerX"] ? [prefs[@"headerX"] floatValue] : 0;
     headerY = prefs[@"headerY"] ? [prefs[@"headerY"] floatValue] : 0;
     headerWidth = prefs[@"headerWidth"] ? [prefs[@"headerWidth"] floatValue] : 0;
@@ -313,6 +390,7 @@ static void loadPrefs() {
 
     
     hasCustomArtworkFrame = prefs[@"hasCustomArtworkFrame"] ? [prefs[@"hasCustomArtworkFrame"] boolValue] : NO;
+    artworkFrameOption = prefs[@"artworkFrameOption"] ? [prefs[@"artworkFrameOption"] intValue] : 0;
     artworkX = prefs[@"artworkX"] ? [prefs[@"artworkX"] floatValue] : 0;
     artworkY = prefs[@"artworkY"] ? [prefs[@"artworkY"] floatValue] : 0;
     artworkWidth = prefs[@"artworkWidth"] ? [prefs[@"artworkWidth"] floatValue] : 0;
@@ -320,12 +398,14 @@ static void loadPrefs() {
 
     
     hasCustomPlayerFrame = prefs[@"hasCustomPlayerFrame"] ? [prefs[@"hasCustomPlayerFrame"] boolValue] : NO;
+    playerFrameOption = prefs[@"playerFrameOption"] ? [prefs[@"playerFrameOption"] intValue] : 0;
     playerX = prefs[@"playerX"] ? [prefs[@"playerX"] floatValue] : 0;
     playerY = prefs[@"playerY"] ? [prefs[@"playerY"] floatValue] : 0;
     playerWidth = prefs[@"playerWidth"] ? [prefs[@"playerWidth"] floatValue] : 0;
     playerHeight = prefs[@"playerHeight"] ? [prefs[@"playerHeight"] floatValue] : 0;
     
     hasCustomVolumeBarFrame = prefs[@"hasCustomVolumeBarFrame"] ? [prefs[@"hasCustomVolumeBarFrame"] boolValue]: NO;
+    volumeFrameOption = prefs[@"volumeFrameOption"] ? [prefs[@"volumeFrameOption"] intValue] : 0;
     volumeX = prefs[@"volumeX"] ? [prefs[@"volumeX"] floatValue] : 0;
     volumeY = prefs[@"volumeY"] ? [prefs[@"volumeY"] floatValue] : 0;
     volumeWidth = prefs[@"volumeWidth"] ? [prefs[@"volumeWidth"] floatValue] : 0;
@@ -333,12 +413,14 @@ static void loadPrefs() {
 
     
     hasCustomScrubberFrame = prefs[@"hasCustomScrubberFrame"] ? [prefs [@"hasCustomScrubberFrame"] boolValue]: NO;
+    scrubberFrameOption = prefs[@"scrubberFrameOption"] ? [prefs[@"scrubberFrameOption"] intValue] : 0;
     scrubberX = prefs[@"scrubberX"] ? [prefs[@"scrubberX"] floatValue] : 0;
     scrubberY = prefs[@"scrubberY"] ? [prefs[@"scrubberY"] floatValue] : 0;
     scrubberWidth = prefs[@"scrubberWidth"] ? [prefs[@"scrubberWidth"] floatValue] : 0;
     scrubberHeight = prefs[@"scrubberHeight"] ? [prefs[@"scrubberHeight"] floatValue] : 44;
     
     hasCustomTransportFrame = prefs[@"hasCustomTransportFrame"] ? [prefs[@"hasCustomTransportFrame"] boolValue]: NO;
+    transportFrameOption = prefs[@"transportFrameOption"] ? [prefs[@"transportFrameOption"] intValue] : 0;
     transportX = prefs[@"transportX"] ? [prefs[@"transportX"] floatValue] : 0;
     transportY = prefs[@"transportY"] ? [prefs[@"transportY"] floatValue] : 0;
     transportWidth = prefs[@"transportWidth"] ? [prefs[@"transportWidth"] floatValue] : 0;

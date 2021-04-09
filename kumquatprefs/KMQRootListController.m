@@ -1,5 +1,7 @@
 #include "KMQRootListController.h"
 //WARNING BAD CODE ALERT
+
+OBWelcomeController *welcomeController;
 @implementation KMQRootListController
 
 - (NSArray *)specifiers {
@@ -135,15 +137,58 @@
     [task launch];
 }
 
+-(void)setupWelcomeController {
+    welcomeController = [[OBWelcomeController alloc] initWithTitle:@"Kumquat" detailText:@"By Galactic" icon:[UIImage systemImageNamed:@"forward.end.alt.fill"]];
+
+    [welcomeController addBulletedListItemWithTitle:@"Choose your own style" description:@"Choose from multiple premade styles, or customize your own." image:[UIImage systemImageNamed:@"rectangle.3.offgrid"]];
+    [welcomeController addBulletedListItemWithTitle:@"Automatically Switch Styles" description:@"Want to enjoy a larger style, but it gets in the way of your notifications. Don't worry, you can now automatically switch when you receive a notification." image:[UIImage systemImageNamed:@"app.badge"]];
+    [welcomeController addBulletedListItemWithTitle:@"Unlimited Customization" description:@"There are tons of options to choose from to fine tune your music player's look." image:[UIImage systemImageNamed:@"gearshape.2"]];
+    
+    OBLinkTrayButton *linkButton = [OBLinkTrayButton linkButton];
+    [linkButton addTarget:self action:@selector(openDonationLink) forControlEvents:UIControlEventTouchUpInside];
+    [linkButton setTitle:@"Donate here" forState:UIControlStateNormal];
+    
+    
+    OBBoldTrayButton* continueButton = [OBBoldTrayButton buttonWithType:1];
+    [continueButton addTarget:self action:@selector(dismissWelcomeController) forControlEvents:UIControlEventTouchUpInside];
+    [continueButton setTitle:@"Get Started" forState:UIControlStateNormal];
+    [continueButton setClipsToBounds:YES];
+    [continueButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [continueButton.layer setCornerRadius:15];
+    
+    [welcomeController.buttonTray addButton:continueButton];
+    [welcomeController.buttonTray addButton:linkButton];
+
+    [welcomeController.buttonTray addCaptionText:@"Thanks for installing Kumquat!"];
+
+    welcomeController.modalPresentationStyle = UIModalPresentationPageSheet;
+    welcomeController.view.tintColor = [UIColor systemOrangeColor];
+    [self presentViewController:welcomeController animated:YES completion:nil];
+    
+    NSString *path = @"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist";
+    NSMutableDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:path].mutableCopy;
+    [settings setValue:@YES forKey:@"shownWelcomeController"];
+    [settings writeToFile:path atomically:YES];
+}
+
+-(void)dismissWelcomeController {
+    [welcomeController dismissViewControllerAnimated:YES completion:nil];
+}
+-(void)openDonationLink {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.paypal.com/paypalme/DBrett684"] options:@{} completionHandler:nil];
+}
+
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    NSString *path = @"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist";
+    NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:path];
     
+    if(![settings[@"shownWelcomeController"] boolValue]) [self setupWelcomeController];
+
     [self updateSpecifierVisibility:NO];
     
     UISwitch *enabledSwitch = [[UISwitch alloc] init];
     [enabledSwitch addTarget:self action:@selector(enabledSwitchChanged:) forControlEvents:UIControlEventValueChanged];
-    NSString *path = @"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist";
-    NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:path];
     NSNumber *isEnabled = [settings valueForKey:@"isEnabled"] ?: @1;
     if([isEnabled isEqual:@1]){
         [enabledSwitch setOn:YES animated:NO];
@@ -170,5 +215,6 @@
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if([self.navigationItem.titleView respondsToSelector:@selector(adjustLabelPositionToScrollOffset:)]) {
         [(KMQAnimatedTitleView *)self.navigationItem.titleView adjustLabelPositionToScrollOffset:scrollView.contentOffset.y];
-    }}
+    }
+}
 @end

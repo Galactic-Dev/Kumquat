@@ -12,47 +12,60 @@ BOOL switchIfNotifications;
 
 BOOL hideRouteButton;
 BOOL hideArtwork;
+BOOL hideIconView;
 BOOL hideVolumeBar;
 BOOL hideScrubber;
 BOOL disableHeaderViewTouches;
+BOOL disableHeaderViewTouchesArtwork;
+BOOL disableHeaderViewTouchesText;
+BOOL removeBackground;
+CGFloat customCornerRadius;
 
 BOOL hasCustomHeaderFrame;
+NSInteger headerFrameOption;
 CGFloat headerX;
 CGFloat headerY;
 CGFloat headerWidth;
 CGFloat headerHeight;
 
 BOOL hasCustomArtworkFrame;
+NSInteger artworkFrameOption;
 CGFloat artworkX;
 CGFloat artworkY;
 CGFloat artworkWidth;
 CGFloat artworkHeight;
 
 BOOL hasCustomPlayerFrame;
+NSInteger playerFrameOption;
 CGFloat playerX;
 CGFloat playerY;
 CGFloat playerWidth;
 CGFloat playerHeight;
 
 BOOL hasCustomVolumeBarFrame;
+NSInteger volumeFrameOption;
 CGFloat volumeX;
 CGFloat volumeY;
 CGFloat volumeWidth;
 CGFloat volumeHeight;
 
 BOOL hasCustomScrubberFrame;
+NSInteger scrubberFrameOption;
 CGFloat scrubberX;
 CGFloat scrubberY;
 CGFloat scrubberWidth;
 CGFloat scrubberHeight;
 
 BOOL hasCustomTransportFrame;
+NSInteger transportFrameOption;
 CGFloat transportX;
 CGFloat transportY;
 CGFloat transportWidth;
 CGFloat transportHeight;
 
 @interface MRUArtworkView : UIView
+@property (strong, nonatomic) UIView *iconView;
+@property (strong, nonatomic) UIView *iconShadowView;
 @end
 
 @interface MRUNowPlayingVolumeControlsView : UIView
@@ -66,6 +79,7 @@ CGFloat transportHeight;
 
 @interface MRUNowPlayingHeaderView : UIView
 @property (strong, nonatomic) MRUArtworkView *artworkView;
+@property (strong, nonatomic) UIView *labelView;
 @property (nonatomic, assign) BOOL showArtworkView;
 @end
 

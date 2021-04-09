@@ -6,7 +6,7 @@
         _specifiers = [self loadSpecifiersFromPlistName:@"MoreOptions" target:self];
         
         
-        NSArray *chosenIDs = @[@"headerY", @"headerX", @"headerWidth", @"headerHeight", @"artworkX", @"artworkY", @"artworkWidth", @"artworkHeight", @"playerX", @"playerY", @"playerWidth", @"playerHeight", @"volumeX", @"volumeY", @"volumeWidth", @"volumeHeight", @"scrubberX", @"scrubberY", @"scrubberWidth", @"scrubberHeight", @"transportX", @"transportY", @"transportWidth", @"transportHeight"];
+        NSArray *chosenIDs = @[@"headerY", @"headerX", @"headerWidth", @"headerHeight", @"artworkX", @"artworkY", @"artworkWidth", @"artworkHeight", @"playerX", @"playerY", @"playerWidth", @"playerHeight", @"volumeX", @"volumeY", @"volumeWidth", @"volumeHeight", @"scrubberX", @"scrubberY", @"scrubberWidth", @"scrubberHeight", @"transportX", @"transportY", @"transportWidth", @"transportHeight", @"disableHeaderViewTouchesArtwork", @"disableHeaderViewTouchesText", @"headerFrameOption", @"artworkFrameOption", @"playerFrameOption", @"volumeFrameOption", @"scrubberFrameOption", @"transportFrameOption"];
         self.savedSpecifiers = (self.savedSpecifiers) ?: [NSMutableDictionary dictionary];
         for(PSSpecifier *specifier in [self specifiersForIDs:chosenIDs]) {
             [self.savedSpecifiers setObject:specifier forKey:[specifier propertyForKey:@"id"]];
@@ -18,46 +18,53 @@
 
 -(void)updateSpecifierVisibility:(BOOL)animated {
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist"];
+    if(![prefs[@"disableHeaderViewTouches"] boolValue]) {
+        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"disableHeaderViewTouchesArtwork"], self.savedSpecifiers[@"disableHeaderViewTouchesText"]] animated:animated];
+    }
+    else if(![self containsSpecifier:self.savedSpecifiers[@"disableHeaderViewTouchesArtwork"]]) {
+        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"disableHeaderViewTouchesArtwork"], self.savedSpecifiers[@"disableHeaderViewTouchesText"]] afterSpecifierID:@"disableHeaderViewTouches" animated:animated];
+    }
+    
     if(![prefs[@"hasCustomHeaderFrame"] boolValue]) {
-        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"headerX"], self.savedSpecifiers[@"headerY"], self.savedSpecifiers[@"headerWidth"], self.savedSpecifiers[@"headerHeight"]] animated:animated];
+        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"headerFrameOption"], self.savedSpecifiers[@"headerX"], self.savedSpecifiers[@"headerY"], self.savedSpecifiers[@"headerWidth"], self.savedSpecifiers[@"headerHeight"]] animated:animated];
     }
     else if(![self containsSpecifier:self.savedSpecifiers[@"headerX"]]) {
-        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"headerX"], self.savedSpecifiers[@"headerY"], self.savedSpecifiers[@"headerWidth"], self.savedSpecifiers[@"headerHeight"]] afterSpecifierID:@"hasCustomHeaderFrame" animated:animated];
+        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"headerFrameOption"], self.savedSpecifiers[@"headerX"], self.savedSpecifiers[@"headerY"], self.savedSpecifiers[@"headerWidth"], self.savedSpecifiers[@"headerHeight"]] afterSpecifierID:@"hasCustomHeaderFrame" animated:animated];
     }
     
     if(![prefs[@"hasCustomArtworkFrame"] boolValue]) {
-        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"artworkX"], self.savedSpecifiers[@"artworkY"], self.savedSpecifiers[@"artworkWidth"], self.savedSpecifiers[@"artworkHeight"]] animated:animated];
+        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"artworkFrameOption"], self.savedSpecifiers[@"artworkX"], self.savedSpecifiers[@"artworkY"], self.savedSpecifiers[@"artworkWidth"], self.savedSpecifiers[@"artworkHeight"]] animated:animated];
     }
     else if(![self containsSpecifier:self.savedSpecifiers[@"artworkX"]]) {
-        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"artworkX"], self.savedSpecifiers[@"artworkY"], self.savedSpecifiers[@"artworkWidth"], self.savedSpecifiers[@"artworkHeight"]] afterSpecifierID:@"hasCustomArtworkFrame" animated:animated];
+        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"artworkFrameOption"], self.savedSpecifiers[@"artworkX"], self.savedSpecifiers[@"artworkY"], self.savedSpecifiers[@"artworkWidth"], self.savedSpecifiers[@"artworkHeight"]] afterSpecifierID:@"hasCustomArtworkFrame" animated:animated];
     }
     
     if(![prefs[@"hasCustomPlayerFrame"] boolValue]) {
-        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"playerX"], self.savedSpecifiers[@"playerY"], self.savedSpecifiers[@"playerWidth"], self.savedSpecifiers[@"playerHeight"]] animated:animated];
+        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"playerFrameOption"], self.savedSpecifiers[@"playerX"], self.savedSpecifiers[@"playerY"], self.savedSpecifiers[@"playerWidth"], self.savedSpecifiers[@"playerHeight"]] animated:animated];
     }
     else if(![self containsSpecifier:self.savedSpecifiers[@"playerX"]]) {
-        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"playerX"], self.savedSpecifiers[@"playerY"], self.savedSpecifiers[@"playerWidth"], self.savedSpecifiers[@"playerHeight"]] afterSpecifierID:@"hasCustomPlayerFrame" animated:animated];
+        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"playerFrameOption"], self.savedSpecifiers[@"playerX"], self.savedSpecifiers[@"playerY"], self.savedSpecifiers[@"playerWidth"], self.savedSpecifiers[@"playerHeight"]] afterSpecifierID:@"hasCustomPlayerFrame" animated:animated];
     }
     
     if(![prefs[@"hasCustomVolumeBarFrame"] boolValue]) {
-        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"volumeX"], self.savedSpecifiers[@"volumeY"], self.savedSpecifiers[@"volumeWidth"], self.savedSpecifiers[@"volumeHeight"]] animated:animated];
+        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"volumeFrameOption"], self.savedSpecifiers[@"volumeX"], self.savedSpecifiers[@"volumeY"], self.savedSpecifiers[@"volumeWidth"], self.savedSpecifiers[@"volumeHeight"]] animated:animated];
     }
     else if(![self containsSpecifier:self.savedSpecifiers[@"volumeX"]]) {
-        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"volumeX"], self.savedSpecifiers[@"volumeY"], self.savedSpecifiers[@"volumeWidth"], self.savedSpecifiers[@"volumeHeight"]] afterSpecifierID:@"hasCustomVolumeBarFrame" animated:animated];
+        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"volumeFrameOption"], self.savedSpecifiers[@"volumeX"], self.savedSpecifiers[@"volumeY"], self.savedSpecifiers[@"volumeWidth"], self.savedSpecifiers[@"volumeHeight"]] afterSpecifierID:@"hasCustomVolumeBarFrame" animated:animated];
     }
     
     if(![prefs[@"hasCustomScrubberFrame"] boolValue]) {
-        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"scrubberX"], self.savedSpecifiers[@"scrubberY"], self.savedSpecifiers[@"scrubberWidth"], self.savedSpecifiers[@"scrubberHeight"]] animated:animated];
+        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"scrubberFrameOption"], self.savedSpecifiers[@"scrubberX"], self.savedSpecifiers[@"scrubberY"], self.savedSpecifiers[@"scrubberWidth"], self.savedSpecifiers[@"scrubberHeight"]] animated:animated];
     }
     else if(![self containsSpecifier:self.savedSpecifiers[@"scrubberX"]]) {
-        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"scrubberX"], self.savedSpecifiers[@"scrubberY"], self.savedSpecifiers[@"scrubberWidth"], self.savedSpecifiers[@"scrubberHeight"]] afterSpecifierID:@"hasCustomScrubberFrame" animated:animated];
+        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"scrubberFrameOption"], self.savedSpecifiers[@"scrubberX"], self.savedSpecifiers[@"scrubberY"], self.savedSpecifiers[@"scrubberWidth"], self.savedSpecifiers[@"scrubberHeight"]] afterSpecifierID:@"hasCustomScrubberFrame" animated:animated];
     }
     
     if(![prefs[@"hasCustomTransportFrame"] boolValue]) {
-        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"transportX"], self.savedSpecifiers[@"transportY"], self.savedSpecifiers[@"transportWidth"], self.savedSpecifiers[@"transportHeight"]] animated:animated];
+        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"transportFrameOption"], self.savedSpecifiers[@"transportX"], self.savedSpecifiers[@"transportY"], self.savedSpecifiers[@"transportWidth"], self.savedSpecifiers[@"transportHeight"]] animated:animated];
     }
     else if(![self containsSpecifier:self.savedSpecifiers[@"transportX"]]) {
-        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"transportX"], self.savedSpecifiers[@"transportY"], self.savedSpecifiers[@"transportWidth"], self.savedSpecifiers[@"transportHeight"]] afterSpecifierID:@"hasCustomTransportFrame" animated:animated];
+        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"transportFrameOption"], self.savedSpecifiers[@"transportX"], self.savedSpecifiers[@"transportY"], self.savedSpecifiers[@"transportWidth"], self.savedSpecifiers[@"transportHeight"]] afterSpecifierID:@"hasCustomTransportFrame" animated:animated];
     }
 }
 
