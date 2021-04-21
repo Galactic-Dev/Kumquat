@@ -2,6 +2,7 @@
 Customize your iOS lockscreen player
 
 TODO: 
+- Custom Preset Options
 - Fix background not completely hiding *
 - Volume/Scrub bars getting hidden in cc *
 - marquee views not scrolling 
