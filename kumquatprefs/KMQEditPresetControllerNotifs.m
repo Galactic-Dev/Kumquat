@@ -157,7 +157,7 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 -(void)sharePreset {
-    UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[@"testing"] applicationActivities:nil];
+    UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[@""] applicationActivities:nil];
     [self presentViewController:activityController animated:YES completion:nil];
 }
 @end
