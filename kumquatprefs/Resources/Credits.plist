@@ -70,7 +70,7 @@
             <key>label</key>
             <string>Lacertosus</string>
             <key>detailLabel</key>
-            <string>Animated Title View &amp; Dynamic Specifiers</string>
+            <string>Custom preference cells</string>
             <key>link</key>
             <string>twitter://user?screen_name=LacertosusDeus</string>
             <key>isTwitter</key>

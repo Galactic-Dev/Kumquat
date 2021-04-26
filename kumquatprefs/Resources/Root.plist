@@ -45,8 +45,8 @@
 				<string>Normal</string>
 				<string>Large</string>
 				<string>Compact</string>
-				<string>No Scrub Bar</string>
-				<string>No Volume Bar</string>
+				<string>No Scrubber</string>
+				<string>No Volume</string>
 			</array>
 			<key>validValues</key>
 			<array>
@@ -57,6 +57,68 @@
 				<integer>4</integer>
 			</array>
 		</dict>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>enabled</key>
+            <true/>
+            <key>label</key>
+            <string>Custom Presets</string>
+            <key>footerText</key>
+            <string>The selected preset will apply to the above selected style</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <false/>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>id</key>
+            <string>customPresetsDisabled</string>
+            <key>key</key>
+            <string>customPresetsDisabled</string>
+            <key>label</key>
+            <string>Disable Presets</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSSegmentCell</string>
+            <key>cellClass</key>
+            <string>KMQSegmentWithButtonCell</string>
+            <key>action</key>
+            <string>newPreset</string>
+            <key>default</key>
+            <integer>0</integer>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>selectedPreset</string>
+            <key>id</key>
+            <string>customPresets</string>
+            <key>valuesDataSource</key>
+            <string>presetValuesSource</string>
+            <key>titlesDataSource</key>
+            <string>presetTitlesSource</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSLinkCell</string>
+            <key>detail</key>
+            <string>KMQEditPresetController</string>
+            <key>label</key>
+            <string>Edit Preset</string>
+            <key>id</key>
+            <string>editPresets</string>
+        </dict>
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
@@ -119,8 +181,8 @@
 				<string>Normal</string>
 				<string>Large</string>
 				<string>Compact</string>
-				<string>No Scrub Bar</string>
-				<string>No Volume Bar</string>
+				<string>No Scrubber</string>
+				<string>No Volume</string>
 			</array>
 			<key>validValues</key>
 			<array>
@@ -131,6 +193,68 @@
 				<integer>4</integer>
 			</array>
 		</dict>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>enabled</key>
+            <true/>
+            <key>label</key>
+            <string>Custom Presets</string>
+            <key>footerText</key>
+            <string>The selected preset will apply to the above selected style</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <false/>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>id</key>
+            <string>customPresetsDisabledNotifs</string>
+            <key>key</key>
+            <string>customPresetsDisabledNotifs</string>
+            <key>label</key>
+            <string>Disable Presets</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSSegmentCell</string>
+            <key>cellClass</key>
+            <string>KMQSegmentWithButtonCell</string>
+            <key>action</key>
+            <string>newPreset</string>
+            <key>default</key>
+            <integer>0</integer>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatprefs</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>selectedPresetNotifs</string>
+            <key>id</key>
+            <string>customPresetsNotifs</string>
+            <key>valuesDataSource</key>
+            <string>presetValuesSource</string>
+            <key>titlesDataSource</key>
+            <string>presetTitlesSource</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSLinkCell</string>
+            <key>detail</key>
+            <string>KMQEditPresetControllerNotifs</string>
+            <key>label</key>
+            <string>Edit Preset</string>
+            <key>id</key>
+            <string>editPresetsNotifs</string>
+        </dict>
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>

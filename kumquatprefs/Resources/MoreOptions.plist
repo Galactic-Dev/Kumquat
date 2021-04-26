@@ -21,7 +21,7 @@
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>defaults</key>
-			<string>com.galacticdev.kumquatprefs</string>
+			<string>com.galacticdev.kumquatpresets</string>
 			<key>enabled</key>
 			<true/>
 			<key>key</key>
@@ -37,7 +37,7 @@
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>defaults</key>
-			<string>com.galacticdev.kumquatprefs</string>
+			<string>com.galacticdev.kumquatpresets</string>
 			<key>enabled</key>
 			<true/>
 			<key>key</key>
@@ -53,7 +53,7 @@
             <key>cell</key>
             <string>PSSwitchCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -69,7 +69,7 @@
             <key>cell</key>
             <string>PSSwitchCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -85,7 +85,7 @@
             <key>cell</key>
             <string>PSSwitchCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -101,7 +101,7 @@
             <key>cell</key>
             <string>PSSwitchCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -119,7 +119,7 @@
             <key>cell</key>
             <string>PSSwitchCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -137,7 +137,7 @@
             <key>cell</key>
             <string>PSSwitchCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -153,17 +153,21 @@
             <key>PostNotification</key>
             <string>com.galacticdev.kumquatprefs.changed</string>
             <key>cell</key>
-            <string>PSSwitchCell</string>
+            <string>PSSliderCell</string>
+            <key>cellClass</key>
+            <string>KMQLabeledSliderCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
-            <key>enabled</key>
-            <true/>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>key</key>
-            <string>removeBackground</string>
+            <string>backgroundAlpha</string>
             <key>label</key>
-            <string>Remove Player Background</string>
+            <string>Background Transparency</string>
             <key>default</key>
-            <false/>
+            <real>1</real>
+            <key>min</key>
+            <real>0</real>
+            <key>max</key>
+            <real>1</real>
         </dict>
         <dict>
             <key>PostNotification</key>
@@ -171,7 +175,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -204,7 +208,7 @@
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>defaults</key>
-			<string>com.galacticdev.kumquatprefs</string>
+			<string>com.galacticdev.kumquatpresets</string>
 			<key>enabled</key>
 			<true/>
 			<key>key</key>
@@ -253,7 +257,7 @@
             <key>default</key>
             <integer>0</integer>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>key</key>
             <string>headerFrameOption</string>
             <key>validValues</key>
@@ -277,7 +281,7 @@
 			<key>cell</key>
 			<string>PSEditTextCell</string>
 			<key>defaults</key>
-			<string>com.galacticdev.kumquatprefs</string>
+			<string>com.galacticdev.kumquatpresets</string>
 			<key>enabled</key>
 			<true/>
 			<key>key</key>
@@ -299,7 +303,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -321,7 +325,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -343,7 +347,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -373,7 +377,7 @@
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>defaults</key>
-			<string>com.galacticdev.kumquatprefs</string>
+			<string>com.galacticdev.kumquatpresets</string>
 			<key>enabled</key>
 			<true/>
 			<key>key</key>
@@ -422,7 +426,7 @@
             <key>default</key>
             <integer>0</integer>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>key</key>
             <string>artworkFrameOption</string>
             <key>validValues</key>
@@ -446,7 +450,7 @@
 			<key>cell</key>
 			<string>PSEditTextCell</string>
 			<key>defaults</key>
-			<string>com.galacticdev.kumquatprefs</string>
+			<string>com.galacticdev.kumquatpresets</string>
 			<key>enabled</key>
 			<true/>
 			<key>key</key>
@@ -468,7 +472,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -490,7 +494,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -512,7 +516,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -542,7 +546,7 @@
             <key>cell</key>
             <string>PSSwitchCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -591,7 +595,7 @@
             <key>default</key>
             <integer>0</integer>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>key</key>
             <string>playerFrameOption</string>
             <key>validValues</key>
@@ -615,7 +619,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -637,7 +641,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -659,7 +663,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -681,7 +685,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -707,7 +711,7 @@
             <key>cell</key>
             <string>PSSwitchCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -756,7 +760,7 @@
             <key>default</key>
             <integer>0</integer>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>key</key>
             <string>volumeFrameOption</string>
             <key>validValues</key>
@@ -780,7 +784,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -802,7 +806,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -824,7 +828,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -846,7 +850,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -872,7 +876,7 @@
             <key>cell</key>
             <string>PSSwitchCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -921,7 +925,7 @@
             <key>default</key>
             <integer>0</integer>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>key</key>
             <string>scrubberFrameOption</string>
             <key>validValues</key>
@@ -945,7 +949,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -967,7 +971,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -989,7 +993,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -1011,7 +1015,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -1039,7 +1043,7 @@
             <key>cell</key>
             <string>PSSwitchCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -1088,7 +1092,7 @@
             <key>default</key>
             <integer>0</integer>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>key</key>
             <string>transportFrameOption</string>
             <key>validValues</key>
@@ -1112,7 +1116,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -1134,7 +1138,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -1156,7 +1160,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>
@@ -1178,7 +1182,7 @@
             <key>cell</key>
             <string>PSEditTextCell</string>
             <key>defaults</key>
-            <string>com.galacticdev.kumquatprefs</string>
+            <string>com.galacticdev.kumquatpresets</string>
             <key>enabled</key>
             <true/>
             <key>key</key>

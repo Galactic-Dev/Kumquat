@@ -8,7 +8,7 @@ OBWelcomeController *welcomeController;
 	if (!_specifiers) {
 		_specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
         
-        NSArray *chosenIDs = @[@"layoutForNotifications", @"layoutForNotificationsGroupCell"];
+        NSArray *chosenIDs = @[@"layoutForNotifications", @"layoutForNotificationsGroupCell", @"customPresets", @"customPresetsNotifs", @"editPresets", @"editPresetsNotifs"];
         self.savedSpecifiers = (self.savedSpecifiers) ?: [NSMutableDictionary dictionary];
         for(PSSpecifier *specifier in [self specifiersForIDs:chosenIDs]) {
             [self.savedSpecifiers setObject:specifier forKey:[specifier propertyForKey:@"id"]];
@@ -25,6 +25,20 @@ OBWelcomeController *welcomeController;
     }
     else if(![self containsSpecifier:self.savedSpecifiers[@"layoutForNotifications"]]) {
         [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"layoutForNotificationsGroupCell"], self.savedSpecifiers[@"layoutForNotifications"]] afterSpecifierID:@"switchIfNotifications" animated:animated];
+    }
+    
+    if([prefs[@"customPresetsDisabled"] boolValue]) {
+        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"customPresets"], self.savedSpecifiers[@"editPresets"]] animated:animated];
+    }
+    else if(![self containsSpecifier:self.savedSpecifiers[@"customPresets"]]) {
+        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"customPresets"], self.savedSpecifiers[@"editPresets"]] afterSpecifierID:@"customPresetsDisabled" animated:animated];
+    }
+    
+    if([prefs[@"customPresetsDisabledNotifs"] boolValue]) {
+        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"customPresetsNotifs"], self.savedSpecifiers[@"editPresetsNotifs"]] animated:animated];
+    }
+    else if(![self containsSpecifier:self.savedSpecifiers[@"customPresetsNotifs"]]) {
+        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"customPresetsNotifs"], self.savedSpecifiers[@"editPresetsNotifs"]] afterSpecifierID:@"customPresetsDisabledNotifs" animated:animated];
     }
 }
 
@@ -138,6 +152,11 @@ OBWelcomeController *welcomeController;
 }
 
 -(void)setupWelcomeController {
+    NSString *path = @"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist";
+    NSMutableDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:path].mutableCopy;
+    [settings setValue:@YES forKey:@"shownWelcomeController"];
+    [settings writeToFile:path atomically:YES];
+    
     welcomeController = [[OBWelcomeController alloc] initWithTitle:@"Kumquat" detailText:@"By Galactic" icon:[UIImage systemImageNamed:@"forward.end.alt.fill"]];
 
     [welcomeController addBulletedListItemWithTitle:@"Choose your own style" description:@"Choose from multiple premade styles, or customize your own." image:[UIImage systemImageNamed:@"rectangle.3.offgrid"]];
@@ -164,11 +183,6 @@ OBWelcomeController *welcomeController;
     welcomeController.modalPresentationStyle = UIModalPresentationPageSheet;
     welcomeController.view.tintColor = [UIColor systemOrangeColor];
     [self presentViewController:welcomeController animated:YES completion:nil];
-    
-    NSString *path = @"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist";
-    NSMutableDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:path].mutableCopy;
-    [settings setValue:@YES forKey:@"shownWelcomeController"];
-    [settings writeToFile:path atomically:YES];
 }
 
 -(void)dismissWelcomeController {
@@ -177,14 +191,18 @@ OBWelcomeController *welcomeController;
 -(void)openDonationLink {
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.paypal.com/paypalme/DBrett684"] options:@{} completionHandler:nil];
 }
-
+-(void)viewDidLoad {
+    [super viewDidLoad];
+    NSString *path = @"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist";
+    NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:path];
+    
+    if(![settings[@"shownWelcomeController"] boolValue]) [self setupWelcomeController];
+}
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     NSString *path = @"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist";
     NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:path];
     
-    if(![settings[@"shownWelcomeController"] boolValue]) [self setupWelcomeController];
-
     [self updateSpecifierVisibility:NO];
     
     UISwitch *enabledSwitch = [[UISwitch alloc] init];
@@ -216,5 +234,59 @@ OBWelcomeController *welcomeController;
     if([self.navigationItem.titleView respondsToSelector:@selector(adjustLabelPositionToScrollOffset:)]) {
         [(KMQAnimatedTitleView *)self.navigationItem.titleView adjustLabelPositionToScrollOffset:scrollView.contentOffset.y];
     }
+}
+
+-(void)newPreset {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"New Preset" message:@"Type a name for your new preset" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+    handler:^(UIAlertAction * action) {
+        NSString *name = alert.textFields[0].text;
+        PSSpecifier *customPresetsSpecifier = [self specifierForID:@"customPresets"];
+        
+        NSString *path = @"/User/Library/Preferences/com.galacticdev.kumquatpresets.plist";
+        NSMutableDictionary *settings = [NSMutableDictionary dictionaryWithContentsOfFile:path] ?: [NSMutableDictionary dictionary];
+        
+        [self.presetTitles addObject:name];
+        [self.presetValues addObject:@(self.presetTitles.count-1)];
+
+        [self replaceContiguousSpecifiers:@[customPresetsSpecifier] withSpecifiers:@[customPresetsSpecifier]];
+        
+        NSMutableArray *presets = [settings[@"customPresetsList"] mutableCopy] ?: [NSMutableArray array];
+        [presets addObject:@{
+            @"title" : name
+        }];
+        [settings setValue:presets forKey:@"customPresetsList"];
+        [settings writeToFile:path atomically:YES];
+        
+        [self reloadSpecifiers];
+    }];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    }];
+    [alert addAction:defaultAction];
+    [alert addAction:cancelAction];
+    [alert addTextFieldWithConfigurationHandler:nil];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+-(NSArray *)presetValuesSource {
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/com.galacticdev.kumquatpresets.plist"];
+    if(!self.presetValues) {
+        self.presetValues = [NSMutableArray array];
+        for(NSDictionary *preset in prefs[@"customPresetsList"]) {
+            [self.presetValues addObject:@([prefs[@"customPresetsList"] indexOfObject:preset])];
+        }
+    }
+    return self.presetValues.copy;
+}
+-(NSArray *)presetTitlesSource {
+    NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/com.galacticdev.kumquatpresets.plist"];
+    if(!self.presetTitles) {
+        self.presetTitles = [NSMutableArray array];
+        for(NSDictionary *preset in prefs[@"customPresetsList"]) {
+            [self.presetTitles addObject:preset[@"title"]];
+        }
+    }
+    return self.presetTitles.copy;
 }
 @end

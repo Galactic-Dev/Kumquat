@@ -1,9 +1,6 @@
 #import "Tweak.h"
 
 CSNotificationAdjunctListViewController *adjunctListController;
-BOOL notifications = NO;
-NSInteger currentLayout;
-
 static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger frameOption) {
     NSMutableArray *mutableValues = values.mutableCopy;
     for(int i = 0; i < values.count; i++) {
@@ -25,6 +22,7 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
 -(void)setContext:(NSInteger)context {
     %orig;
     if(context == 2) {
+        self.controlsView.headerView.artworkView.hidden = hideArtwork;
         switch (currentLayout) {
             case 0:
                 self.controlsView.showTimeControlsView = YES;
@@ -39,20 +37,17 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
                 self.layout = 1;
                 self.containerView.showSeparator = NO;
                 self.controlsView.volumeControlsView.hidden = NO;
-                self.controlsView.headerView.artworkView.hidden = hideArtwork;
                 break;
             case 3:
                 self.layout = 1;
                 self.containerView.showSeparator = NO;
                 self.controlsView.showTimeControlsView = NO;
                 self.controlsView.volumeControlsView.hidden = NO;
-                self.controlsView.headerView.artworkView.hidden = hideArtwork;
                 break;
             case 4:
                 self.layout = 1;
                 self.containerView.showSeparator = NO;
                 self.controlsView.volumeControlsView.hidden = YES;
-                self.controlsView.headerView.showArtworkView = hideArtwork;
                 break;
         }
         notifications = NO;
@@ -74,6 +69,8 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
     else {
         currentLayout = defaultLayout;
     }
+    updatePreset();
+    self.controlsView.headerView.artworkView.hidden = hideArtwork;
     if(self.context == 2) {
         switch(currentLayout) {
             case 0:
@@ -92,7 +89,6 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
                 self.containerView.showSeparator = NO;
                 self.controlsView.showTimeControlsView = YES;
                 self.controlsView.volumeControlsView.hidden = NO;
-                self.controlsView.headerView.artworkView.hidden = hideArtwork; //artwork won't hide for some reason with this layout unless i hide it myself
                 break;
             }
             case 3:
@@ -100,14 +96,12 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
                 self.containerView.showSeparator = NO;
                 self.controlsView.showTimeControlsView = NO;
                 self.controlsView.volumeControlsView.hidden = NO;
-                self.controlsView.headerView.showArtworkView = hideArtwork;
                 break;
             case 4:
                 self.layout = 1;
                 self.containerView.showSeparator = NO;
                 self.controlsView.showTimeControlsView = YES;
                 self.controlsView.volumeControlsView.hidden = YES;
-                self.controlsView.headerView.showArtworkView = hideArtwork;
                 break;
             default:
                 self.layout = 4;
@@ -189,9 +183,7 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
     if(customCornerRadius != -1) {
         [(UIView *)[self.view.superview.superview valueForKey:@"_backgroundView"] layer].cornerRadius = customCornerRadius;
     }
-    if(removeBackground) {
-        [(UIView *)[self.view.superview.superview valueForKey:@"_backgroundView"] setHidden:YES];
-    }
+    [(UIView *)[self.view.superview.superview valueForKey:@"_backgroundView"] setAlpha:backgroundAlpha];
 }
 %end
 
@@ -266,12 +258,18 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
         if(hasCustomHeaderFrame) {
             newFrame = CGRectMake(newFrame.origin.x - headerX, newFrame.origin.y - headerY, newFrame.size.width, newFrame.size.height);
         }
+    }
+    %orig(newFrame);
+}
+-(void)setArtworkImage:(id)arg1 {
+    %orig;
+    MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview.superview;
+    if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2) {
         if(hideIconView) {
             self.iconShadowView.hidden = YES;
             self.iconView.hidden = YES;
         }
     }
-    %orig(newFrame);
 }
 %end
 
@@ -314,11 +312,14 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
 %hook MRUNowPlayingControlsView
 -(void)setFrame:(CGRect)frame {
     %orig;
-    if(hideVolumeBar) {
-        self.volumeControlsView.hidden = YES;
-    }
-    if(hideScrubber) {
-        self.showTimeControlsView = NO;
+    MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview;
+    if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2) {
+        if(hideVolumeBar) {
+            self.volumeControlsView.hidden = YES;
+        }
+        if(hideScrubber) {
+            self.showTimeControlsView = NO;
+        }
     }
 }
 %end
@@ -356,76 +357,6 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
     }
 }
 %end
-
-static void loadPrefs() {
-    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist"];
-    
-    isEnabled = prefs[@"isEnabled"] ? [prefs[@"isEnabled"] boolValue] : YES;
-    
-    defaultLayout = prefs[@"defaultStyle"] ? [prefs[@"defaultStyle"] intValue] : 0;
-    currentLayout = defaultLayout;
-    
-    layoutForNotifications = prefs[@"layoutForNotifications"] ? [prefs[@"layoutForNotifications"] intValue] : 0;
-    switchIfNotifications = prefs[@"switchIfNotifications"] ? [prefs[@"switchIfNotifications"] boolValue] : NO;
-    notifications = NO;
-    
-    hideRouteButton = prefs[@"hideRouteButton"] ? [prefs[@"hideRouteButton"] boolValue] : NO;
-    hideArtwork = prefs[@"hideArtwork"] ? [prefs[@"hideArtwork"] boolValue] : NO;
-    hideIconView = prefs[@"hideIconView"] ? [prefs[@"hideIconView"] boolValue] : NO;
-    hideVolumeBar = prefs[@"hideVolumeBar"] ? [prefs[@"hideVolumeBar"] boolValue] : NO;
-    hideScrubber = prefs[@"hideScrubber"] ? [prefs[@"hideScrubber"] boolValue] : NO;
-    disableHeaderViewTouches = prefs[@"disableHeaderViewTouches"] ? [prefs[@"disableHeaderViewTouches"] boolValue] : NO;
-    disableHeaderViewTouchesArtwork = prefs[@"disableHeaderViewTouchesArtwork"] ? [prefs[@"disableHeaderViewTouchesArtwork"] boolValue] : YES;
-    disableHeaderViewTouchesText = prefs[@"disableHeaderViewTouchesText"] ? [prefs[@"disableHeaderViewTouchesText"] boolValue] : YES;
-
-    removeBackground = prefs[@"removeBackground"] ? [prefs[@"removeBackground"] boolValue] : NO;
-    customCornerRadius = prefs[@"customCornerRadius"] && ![prefs[@"customCornerRadius"] isEqualToString:@""]? [prefs[@"customCornerRadius"] floatValue] : -1;
-    
-    hasCustomHeaderFrame = prefs[@"hasCustomHeaderFrame"] ? [prefs[@"hasCustomHeaderFrame"] boolValue] : NO;
-    headerFrameOption = prefs[@"headerFrameOption"] ? [prefs[@"headerFrameOption"] intValue] : 0;
-    headerX = prefs[@"headerX"] ? [prefs[@"headerX"] floatValue] : 0;
-    headerY = prefs[@"headerY"] ? [prefs[@"headerY"] floatValue] : 0;
-    headerWidth = prefs[@"headerWidth"] ? [prefs[@"headerWidth"] floatValue] : 0;
-    headerHeight = prefs[@"headerHeight"] ? [prefs[@"headerHeight"] floatValue] : 0;
-
-    
-    hasCustomArtworkFrame = prefs[@"hasCustomArtworkFrame"] ? [prefs[@"hasCustomArtworkFrame"] boolValue] : NO;
-    artworkFrameOption = prefs[@"artworkFrameOption"] ? [prefs[@"artworkFrameOption"] intValue] : 0;
-    artworkX = prefs[@"artworkX"] ? [prefs[@"artworkX"] floatValue] : 0;
-    artworkY = prefs[@"artworkY"] ? [prefs[@"artworkY"] floatValue] : 0;
-    artworkWidth = prefs[@"artworkWidth"] ? [prefs[@"artworkWidth"] floatValue] : 0;
-    artworkHeight = prefs[@"artworkHeight"] ? [prefs[@"artworkHeight"] floatValue] : 0;
-
-    
-    hasCustomPlayerFrame = prefs[@"hasCustomPlayerFrame"] ? [prefs[@"hasCustomPlayerFrame"] boolValue] : NO;
-    playerFrameOption = prefs[@"playerFrameOption"] ? [prefs[@"playerFrameOption"] intValue] : 0;
-    playerX = prefs[@"playerX"] ? [prefs[@"playerX"] floatValue] : 0;
-    playerY = prefs[@"playerY"] ? [prefs[@"playerY"] floatValue] : 0;
-    playerWidth = prefs[@"playerWidth"] ? [prefs[@"playerWidth"] floatValue] : 0;
-    playerHeight = prefs[@"playerHeight"] ? [prefs[@"playerHeight"] floatValue] : 0;
-    
-    hasCustomVolumeBarFrame = prefs[@"hasCustomVolumeBarFrame"] ? [prefs[@"hasCustomVolumeBarFrame"] boolValue]: NO;
-    volumeFrameOption = prefs[@"volumeFrameOption"] ? [prefs[@"volumeFrameOption"] intValue] : 0;
-    volumeX = prefs[@"volumeX"] ? [prefs[@"volumeX"] floatValue] : 0;
-    volumeY = prefs[@"volumeY"] ? [prefs[@"volumeY"] floatValue] : 0;
-    volumeWidth = prefs[@"volumeWidth"] ? [prefs[@"volumeWidth"] floatValue] : 0;
-    volumeHeight = prefs[@"volumeHeight"] ? [prefs[@"volumeHeight"] floatValue] : 44;
-
-    
-    hasCustomScrubberFrame = prefs[@"hasCustomScrubberFrame"] ? [prefs [@"hasCustomScrubberFrame"] boolValue]: NO;
-    scrubberFrameOption = prefs[@"scrubberFrameOption"] ? [prefs[@"scrubberFrameOption"] intValue] : 0;
-    scrubberX = prefs[@"scrubberX"] ? [prefs[@"scrubberX"] floatValue] : 0;
-    scrubberY = prefs[@"scrubberY"] ? [prefs[@"scrubberY"] floatValue] : 0;
-    scrubberWidth = prefs[@"scrubberWidth"] ? [prefs[@"scrubberWidth"] floatValue] : 0;
-    scrubberHeight = prefs[@"scrubberHeight"] ? [prefs[@"scrubberHeight"] floatValue] : 44;
-    
-    hasCustomTransportFrame = prefs[@"hasCustomTransportFrame"] ? [prefs[@"hasCustomTransportFrame"] boolValue]: NO;
-    transportFrameOption = prefs[@"transportFrameOption"] ? [prefs[@"transportFrameOption"] intValue] : 0;
-    transportX = prefs[@"transportX"] ? [prefs[@"transportX"] floatValue] : 0;
-    transportY = prefs[@"transportY"] ? [prefs[@"transportY"] floatValue] : 0;
-    transportWidth = prefs[@"transportWidth"] ? [prefs[@"transportWidth"] floatValue] : 0;
-    transportHeight = prefs[@"transportHeight"] ? [prefs[@"transportHeight"] floatValue] : 44;
-}
 
 static void prefsChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
     loadPrefs();

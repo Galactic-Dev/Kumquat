@@ -3,12 +3,21 @@
 #include <RemoteLog.h>
 #import <dlfcn.h>
 
+BOOL notifications = NO;
+NSInteger currentLayout;
+
 //Preference Values
 BOOL isEnabled;
 
 NSInteger defaultLayout;
 NSInteger layoutForNotifications;
 BOOL switchIfNotifications;
+
+BOOL presetsDisabled;
+BOOL presetsDisabledNotifs;
+NSInteger selectedPreset;
+NSInteger selectedPresetNotifs;
+NSInteger currentPreset;
 
 BOOL hideRouteButton;
 BOOL hideArtwork;
@@ -18,7 +27,7 @@ BOOL hideScrubber;
 BOOL disableHeaderViewTouches;
 BOOL disableHeaderViewTouchesArtwork;
 BOOL disableHeaderViewTouchesText;
-BOOL removeBackground;
+CGFloat backgroundAlpha;
 CGFloat customCornerRadius;
 
 BOOL hasCustomHeaderFrame;
@@ -63,9 +72,110 @@ CGFloat transportY;
 CGFloat transportWidth;
 CGFloat transportHeight;
 
+static void updatePreset() {
+    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist"];
+    NSMutableDictionary *presetPrefs = [NSMutableDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/com.galacticdev.kumquatpresets.plist"];
+    
+    presetsDisabled = prefs[@"customPresetsDisabled"] ? [prefs[@"customPresetsDisabled"] boolValue] : NO;
+    presetsDisabledNotifs = prefs[@"customPresetsDisabledNotifs"] ? [prefs[@"customPresetsDisabledNotifs"] boolValue] : NO;
+    
+    selectedPreset = prefs[@"selectedPreset"] ? [prefs[@"selectedPreset"] intValue] : 0;
+    selectedPresetNotifs = prefs[@"selectedPresetNotifs"] ? [prefs[@"selectedPresetNotifs"] intValue] : 0;
+    
+    if(switchIfNotifications && notifications) {
+        currentPreset = selectedPresetNotifs;
+    }
+    else {
+        currentPreset = selectedPreset;
+    }
+    
+    NSArray *presets = presetPrefs[@"customPresetsList"];
+    NSDictionary *preset;
+    if(switchIfNotifications && notifications) {
+        if(!presetsDisabledNotifs) preset = presets[selectedPresetNotifs];
+        else preset = nil;
+    }
+    else {
+        if(!presetsDisabled) preset = presets[selectedPreset];
+        else preset = nil;
+    }
+    hideRouteButton = preset[@"hideRouteButton"] ? [preset[@"hideRouteButton"] boolValue] : NO;
+    hideArtwork = preset[@"hideArtwork"] ? [preset[@"hideArtwork"] boolValue] : NO;
+    hideIconView = preset[@"hideIconView"] ? [preset[@"hideIconView"] boolValue] : NO;
+    hideVolumeBar = preset[@"hideVolumeBar"] ? [preset[@"hideVolumeBar"] boolValue] : NO;
+    hideScrubber = preset[@"hideScrubber"] ? [preset[@"hideScrubber"] boolValue] : NO;
+    disableHeaderViewTouches = preset[@"disableHeaderViewTouches"] ? [preset[@"disableHeaderViewTouches"] boolValue] : NO;
+    disableHeaderViewTouchesArtwork = preset[@"disableHeaderViewTouchesArtwork"] ? [preset[@"disableHeaderViewTouchesArtwork"] boolValue] : YES;
+    disableHeaderViewTouchesText = preset[@"disableHeaderViewTouchesText"] ? [preset[@"disableHeaderViewTouchesText"] boolValue] : YES;
+
+    backgroundAlpha = preset[@"backgroundAlpha"] ? [preset[@"backgroundAlpha"] floatValue] : 1.0f;
+    customCornerRadius = preset[@"customCornerRadius"] && ![preset[@"customCornerRadius"] isEqualToString:@""]? [preset[@"customCornerRadius"] floatValue] : -1;
+    
+    hasCustomHeaderFrame = preset[@"hasCustomHeaderFrame"] ? [preset[@"hasCustomHeaderFrame"] boolValue] : NO;
+    headerFrameOption = preset[@"headerFrameOption"] ? [preset[@"headerFrameOption"] intValue] : 0;
+    headerX = preset[@"headerX"] ? [preset[@"headerX"] floatValue] : 0;
+    headerY = preset[@"headerY"] ? [preset[@"headerY"] floatValue] : 0;
+    headerWidth = preset[@"headerWidth"] ? [preset[@"headerWidth"] floatValue] : 0;
+    headerHeight = preset[@"headerHeight"] ? [preset[@"headerHeight"] floatValue] : 0;
+
+    
+    hasCustomArtworkFrame = preset[@"hasCustomArtworkFrame"] ? [preset[@"hasCustomArtworkFrame"] boolValue] : NO;
+    artworkFrameOption = preset[@"artworkFrameOption"] ? [preset[@"artworkFrameOption"] intValue] : 0;
+    artworkX = preset[@"artworkX"] ? [preset[@"artworkX"] floatValue] : 0;
+    artworkY = preset[@"artworkY"] ? [preset[@"artworkY"] floatValue] : 0;
+    artworkWidth = preset[@"artworkWidth"] ? [preset[@"artworkWidth"] floatValue] : 0;
+    artworkHeight = preset[@"artworkHeight"] ? [preset[@"artworkHeight"] floatValue] : 0;
+
+    
+    hasCustomPlayerFrame = preset[@"hasCustomPlayerFrame"] ? [preset[@"hasCustomPlayerFrame"] boolValue] : NO;
+    playerFrameOption = preset[@"playerFrameOption"] ? [preset[@"playerFrameOption"] intValue] : 0;
+    playerX = preset[@"playerX"] ? [preset[@"playerX"] floatValue] : 0;
+    playerY = preset[@"playerY"] ? [preset[@"playerY"] floatValue] : 0;
+    playerWidth = preset[@"playerWidth"] ? [preset[@"playerWidth"] floatValue] : 0;
+    playerHeight = preset[@"playerHeight"] ? [preset[@"playerHeight"] floatValue] : 0;
+    
+    hasCustomVolumeBarFrame = preset[@"hasCustomVolumeBarFrame"] ? [preset[@"hasCustomVolumeBarFrame"] boolValue]: NO;
+    volumeFrameOption = preset[@"volumeFrameOption"] ? [preset[@"volumeFrameOption"] intValue] : 0;
+    volumeX = preset[@"volumeX"] ? [preset[@"volumeX"] floatValue] : 0;
+    volumeY = preset[@"volumeY"] ? [preset[@"volumeY"] floatValue] : 0;
+    volumeWidth = preset[@"volumeWidth"] ? [preset[@"volumeWidth"] floatValue] : 0;
+    volumeHeight = preset[@"volumeHeight"] ? [preset[@"volumeHeight"] floatValue] : 44;
+
+    
+    hasCustomScrubberFrame = preset[@"hasCustomScrubberFrame"] ? [prefs [@"hasCustomScrubberFrame"] boolValue]: NO;
+    scrubberFrameOption = preset[@"scrubberFrameOption"] ? [preset[@"scrubberFrameOption"] intValue] : 0;
+    scrubberX = preset[@"scrubberX"] ? [preset[@"scrubberX"] floatValue] : 0;
+    scrubberY = preset[@"scrubberY"] ? [preset[@"scrubberY"] floatValue] : 0;
+    scrubberWidth = preset[@"scrubberWidth"] ? [preset[@"scrubberWidth"] floatValue] : 0;
+    scrubberHeight = preset[@"scrubberHeight"] ? [preset[@"scrubberHeight"] floatValue] : 44;
+    
+    hasCustomTransportFrame = preset[@"hasCustomTransportFrame"] ? [preset[@"hasCustomTransportFrame"] boolValue]: NO;
+    transportFrameOption = preset[@"transportFrameOption"] ? [preset[@"transportFrameOption"] intValue] : 0;
+    transportX = preset[@"transportX"] ? [preset[@"transportX"] floatValue] : 0;
+    transportY = preset[@"transportY"] ? [preset[@"transportY"] floatValue] : 0;
+    transportWidth = preset[@"transportWidth"] ? [preset[@"transportWidth"] floatValue] : 0;
+    transportHeight = preset[@"transportHeight"] ? [preset[@"transportHeight"] floatValue] : 44;
+}
+
+static void loadPrefs() {
+    NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist"];
+
+    isEnabled = prefs[@"isEnabled"] ? [prefs[@"isEnabled"] boolValue] : YES;
+    
+    defaultLayout = prefs[@"defaultStyle"] ? [prefs[@"defaultStyle"] intValue] : 0;
+    currentLayout = defaultLayout;
+    
+    layoutForNotifications = prefs[@"layoutForNotifications"] ? [prefs[@"layoutForNotifications"] intValue] : 0;
+    switchIfNotifications = prefs[@"switchIfNotifications"] ? [prefs[@"switchIfNotifications"] boolValue] : NO;
+    notifications = NO;
+    
+    updatePreset();
+}
+
 @interface MRUArtworkView : UIView
 @property (strong, nonatomic) UIView *iconView;
 @property (strong, nonatomic) UIView *iconShadowView;
+@property (strong, nonatomic) UIView *artworkShadowView;
 @end
 
 @interface MRUNowPlayingVolumeControlsView : UIView

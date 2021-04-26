@@ -4,6 +4,11 @@
 #import "NSTask.h"
 #import "KMQAnimatedTitleView.h"
 
+@interface PSSpecifier (Private)
+-(void)setValues:(id)arg1 titles:(id)arg2;
+@property (strong, nonatomic) NSArray *values;
+@end
+
 @interface PSListController (Private)
 -(BOOL)containsSpecifier:(PSSpecifier *)arg1;
 @end
@@ -37,4 +42,6 @@
 @property (strong, nonatomic) KMQAnimatedTitleView *titleView;
 -(void)setupWelcomeController;
 -(void)dismissWelcomeController;
+@property (strong, nonatomic) NSMutableArray *presetValues;
+@property (strong, nonatomic) NSMutableArray *presetTitles;
 @end
