@@ -2,7 +2,7 @@
 Customize your iOS lockscreen player
 
 TODO: 
-- Custom Preset Options
+- Custom Preset Options *
 - Fix background not completely hiding *
 - Volume/Scrub bars getting hidden in cc *
 - marquee views not scrolling 
@@ -11,6 +11,6 @@ TODO:
 - relative frame has issues with the frame staying the same
 - landscape mode support
 
-- transparency background option
+- transparency background option *
 - custom artwork corner radius
 - custom frames for individual transport buttons
