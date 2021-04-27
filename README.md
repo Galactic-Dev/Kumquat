@@ -7,7 +7,6 @@ TODO:
 - relative frame has issues with the frame staying the same
 - landscape mode support
 
-- custom artwork corner radius
 - custom frames for individual transport buttons
 
 
