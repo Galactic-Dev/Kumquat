@@ -28,6 +28,7 @@ BOOL disableHeaderViewTouches;
 BOOL disableHeaderViewTouchesArtwork;
 BOOL disableHeaderViewTouchesText;
 CGFloat backgroundAlpha;
+CGFloat customArtworkCornerRadius;
 CGFloat customCornerRadius;
 
 BOOL hasCustomHeaderFrame;
@@ -90,8 +91,18 @@ static void updatePreset() {
     }
     
     NSArray *presets = presetPrefs[@"customPresetsList"];
+
+    if(selectedPreset > presets.count-1) {
+        selectedPreset = 0;
+    }
+    if(selectedPresetNotifs > presets.count-1) {
+        selectedPresetNotifs = 0;
+    }
     NSDictionary *preset;
-    if(switchIfNotifications && notifications) {
+    if(presets.count <= 0) {
+        preset = nil;
+    }
+    else if(switchIfNotifications && notifications) {
         if(!presetsDisabledNotifs) preset = presets[selectedPresetNotifs];
         else preset = nil;
     }
@@ -99,6 +110,7 @@ static void updatePreset() {
         if(!presetsDisabled) preset = presets[selectedPreset];
         else preset = nil;
     }
+    
     hideRouteButton = preset[@"hideRouteButton"] ? [preset[@"hideRouteButton"] boolValue] : NO;
     hideArtwork = preset[@"hideArtwork"] ? [preset[@"hideArtwork"] boolValue] : NO;
     hideIconView = preset[@"hideIconView"] ? [preset[@"hideIconView"] boolValue] : NO;
@@ -110,6 +122,8 @@ static void updatePreset() {
 
     backgroundAlpha = preset[@"backgroundAlpha"] ? [preset[@"backgroundAlpha"] floatValue] : 1.0f;
     customCornerRadius = preset[@"customCornerRadius"] && ![preset[@"customCornerRadius"] isEqualToString:@""]? [preset[@"customCornerRadius"] floatValue] : -1;
+    customArtworkCornerRadius = preset[@"customArtworkCornerRadius"] && ![preset[@"customArtworkCornerRadius"] isEqualToString:@""]? [preset[@"customArtworkCornerRadius"] floatValue] : -1;
+
     
     hasCustomHeaderFrame = preset[@"hasCustomHeaderFrame"] ? [preset[@"hasCustomHeaderFrame"] boolValue] : NO;
     headerFrameOption = preset[@"headerFrameOption"] ? [preset[@"headerFrameOption"] intValue] : 0;
@@ -142,7 +156,7 @@ static void updatePreset() {
     volumeHeight = preset[@"volumeHeight"] ? [preset[@"volumeHeight"] floatValue] : 44;
 
     
-    hasCustomScrubberFrame = preset[@"hasCustomScrubberFrame"] ? [prefs [@"hasCustomScrubberFrame"] boolValue]: NO;
+    hasCustomScrubberFrame = preset[@"hasCustomScrubberFrame"] ? [preset [@"hasCustomScrubberFrame"] boolValue]: NO;
     scrubberFrameOption = preset[@"scrubberFrameOption"] ? [preset[@"scrubberFrameOption"] intValue] : 0;
     scrubberX = preset[@"scrubberX"] ? [preset[@"scrubberX"] floatValue] : 0;
     scrubberY = preset[@"scrubberY"] ? [preset[@"scrubberY"] floatValue] : 0;
@@ -176,6 +190,7 @@ static void loadPrefs() {
 @property (strong, nonatomic) UIView *iconView;
 @property (strong, nonatomic) UIView *iconShadowView;
 @property (strong, nonatomic) UIView *artworkShadowView;
+@property (strong, nonatomic) UIImageView *artworkImageView;
 @end
 
 @interface MRUNowPlayingVolumeControlsView : UIView
@@ -191,6 +206,7 @@ static void loadPrefs() {
 @property (strong, nonatomic) MRUArtworkView *artworkView;
 @property (strong, nonatomic) UIView *labelView;
 @property (nonatomic, assign) BOOL showArtworkView;
+@property (nonatomic, assign) BOOL showRoutingButton;
 @end
 
 @interface MRUNowPlayingControlsView : UIView

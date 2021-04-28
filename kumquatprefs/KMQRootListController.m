@@ -8,7 +8,7 @@ OBWelcomeController *welcomeController;
 	if (!_specifiers) {
 		_specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
         
-        NSArray *chosenIDs = @[@"layoutForNotifications", @"layoutForNotificationsGroupCell", @"customPresets", @"customPresetsNotifs", @"editPresets", @"editPresetsNotifs"];
+        NSArray *chosenIDs = @[@"layoutForNotifications", @"layoutForNotificationsGroupCell", @"customPresets", @"customPresetsNotifs", @"editPresets", @"editPresetsNotifs", @"customPresetsDisabledNotifs", @"customPresetsNotifsGroup"];
         self.savedSpecifiers = (self.savedSpecifiers) ?: [NSMutableDictionary dictionary];
         for(PSSpecifier *specifier in [self specifiersForIDs:chosenIDs]) {
             [self.savedSpecifiers setObject:specifier forKey:[specifier propertyForKey:@"id"]];
@@ -21,10 +21,10 @@ OBWelcomeController *welcomeController;
 -(void)updateSpecifierVisibility:(BOOL)animated {
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist"];
     if(![prefs[@"switchIfNotifications"] boolValue]) {
-        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"layoutForNotificationsGroupCell"], self.savedSpecifiers[@"layoutForNotifications"]] animated:animated];
+        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"layoutForNotificationsGroupCell"], self.savedSpecifiers[@"layoutForNotifications"], self.savedSpecifiers[@"customPresetsNotifsGroup"], self.savedSpecifiers[@"customPresetsDisabledNotifs"], self.savedSpecifiers[@"customPresetsNotifs"],self.savedSpecifiers[@"editPresetsNotifs"]] animated:animated];
     }
     else if(![self containsSpecifier:self.savedSpecifiers[@"layoutForNotifications"]]) {
-        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"layoutForNotificationsGroupCell"], self.savedSpecifiers[@"layoutForNotifications"]] afterSpecifierID:@"switchIfNotifications" animated:animated];
+        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"layoutForNotificationsGroupCell"], self.savedSpecifiers[@"layoutForNotifications"], self.savedSpecifiers[@"customPresetsNotifsGroup"], self.savedSpecifiers[@"customPresetsDisabledNotifs"], self.savedSpecifiers[@"customPresetsNotifs"], self.savedSpecifiers[@"editPresetsNotifs"]] afterSpecifierID:@"switchIfNotifications" animated:animated];
     }
     
     if([prefs[@"customPresetsDisabled"] boolValue]) {
@@ -34,7 +34,7 @@ OBWelcomeController *welcomeController;
         [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"customPresets"], self.savedSpecifiers[@"editPresets"]] afterSpecifierID:@"customPresetsDisabled" animated:animated];
     }
     
-    if([prefs[@"customPresetsDisabledNotifs"] boolValue]) {
+    if([prefs[@"customPresetsDisabledNotifs"] boolValue] || ![prefs[@"switchIfNotifications"] boolValue]) {
         [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"customPresetsNotifs"], self.savedSpecifiers[@"editPresetsNotifs"]] animated:animated];
     }
     else if(![self containsSpecifier:self.savedSpecifiers[@"customPresetsNotifs"]]) {
@@ -262,8 +262,49 @@ OBWelcomeController *welcomeController;
     }];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     }];
-    [alert addAction:defaultAction];
+    UIAlertAction *importAction = [UIAlertAction actionWithTitle:@"Import" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        NSString *text = [UIPasteboard generalPasteboard].string;
+        if(!text) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:@"Clipboard empty. Copy the preset to your clipboard to import it!" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            }];
+            [alert addAction:defaultAction];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+        else {
+            NSError *error;
+            NSData *data = [text dataUsingEncoding:NSUTF8StringEncoding];
+            NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+            if(dictionary) {
+                PSSpecifier *customPresetsSpecifier = [self specifierForID:@"customPresets"];
+                
+                NSString *path = @"/User/Library/Preferences/com.galacticdev.kumquatpresets.plist";
+                NSMutableDictionary *settings = [NSMutableDictionary dictionaryWithContentsOfFile:path] ?: [NSMutableDictionary dictionary];
+                
+                [self.presetTitles addObject:dictionary[@"title"]];
+                [self.presetValues addObject:@(self.presetTitles.count-1)];
+
+                [self replaceContiguousSpecifiers:@[customPresetsSpecifier] withSpecifiers:@[customPresetsSpecifier]];
+                
+                NSMutableArray *presets = [settings[@"customPresetsList"] mutableCopy] ?: [NSMutableArray array];
+                [presets addObject:dictionary];
+                [settings setValue:presets forKey:@"customPresetsList"];
+                [settings writeToFile:path atomically:YES];
+                
+                [self reloadSpecifiers];
+            }
+            else {
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:@"Something went wrong. Insure you copied the preset correctly" preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                }];
+                [alert addAction:defaultAction];
+                [self presentViewController:alert animated:YES completion:nil];
+            }
+        }
+    }];
+    [alert addAction:importAction];
     [alert addAction:cancelAction];
+    [alert addAction:defaultAction];
     [alert addTextFieldWithConfigurationHandler:nil];
     
     [self presentViewController:alert animated:YES completion:nil];

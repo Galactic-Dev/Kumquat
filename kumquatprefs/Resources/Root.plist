@@ -202,6 +202,8 @@
             <string>Custom Presets</string>
             <key>footerText</key>
             <string>The selected preset will apply to the above selected style</string>
+            <key>id</key>
+            <string>customPresetsNotifsGroup</string>
         </dict>
         <dict>
             <key>PostNotification</key>
@@ -255,6 +257,7 @@
             <key>id</key>
             <string>editPresetsNotifs</string>
         </dict>
+        <!--
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
@@ -276,7 +279,7 @@
 			<true/>
 			<key>label</key>
 			<string>More Options</string>
-		</dict>
+		</dict>-->
         <dict>
             <key>cell</key>
             <string>PSGroupCell</string>

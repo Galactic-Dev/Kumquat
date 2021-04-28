@@ -71,6 +71,7 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
     }
     updatePreset();
     self.controlsView.headerView.artworkView.hidden = hideArtwork;
+    self.controlsView.headerView.showRoutingButton = !hideRouteButton;
     if(self.context == 2) {
         switch(currentLayout) {
             case 0:
@@ -206,6 +207,13 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
                 %orig(rectWithValues(rect, originalRect, headerFrameOption));
                 return;
             }
+            
+            RLog(@"hideRouteButton %d", hideRouteButton);
+            if(hideRouteButton) self.showRoutingButton = NO;
+            else self.showRoutingButton = YES;
+            
+            if(hideArtwork) self.showArtworkView = NO;
+            else self.showArtworkView = YES;
         }
     }
     %orig;
@@ -257,6 +265,13 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
         }
         if(hasCustomHeaderFrame) {
             newFrame = CGRectMake(newFrame.origin.x - headerX, newFrame.origin.y - headerY, newFrame.size.width, newFrame.size.height);
+        }
+        if(backgroundAlpha < 1) {
+            self.artworkShadowView.hidden = YES;
+        }
+        
+        if(customArtworkCornerRadius != -1) {
+            self.artworkImageView.layer.cornerRadius = customArtworkCornerRadius;
         }
     }
     %orig(newFrame);

@@ -71,7 +71,6 @@
     NSString *path = [NSString stringWithFormat:@"/User/Library/Preferences/%@.plist", specifier.properties[@"defaults"]];
     NSMutableDictionary *settings = [NSMutableDictionary dictionaryWithContentsOfFile:path];
     NSMutableArray *presets = settings[@"customPresetsList"];
-    RLog(@"prestes %@, %d, %@", presets, [presets indexOfObject:self.preset], self.preset);
     [presets replaceObjectAtIndex:[presets indexOfObject:self.preset] withObject:self.preset];
     [self.preset setValue:value forKey:specifier.properties[@"key"]];
     [settings setObject:presets forKey:@"customPresetsList"];
@@ -114,7 +113,12 @@
 
     NSInteger selectedPreset = [prefs[@"selectedPresetNotifs"] intValue];
     NSArray *presets = presetPrefs[@"customPresetsList"];
-    self.preset = [presets[selectedPreset] mutableCopy];
+    if(selectedPreset < presets.count) {
+        self.preset = [presets[selectedPreset] mutableCopy];
+    }
+    else {
+        self.preset = [presets[0] mutableCopy];
+    }
     self.title = self.preset[@"title"];
     
     [self updateSpecifierVisibility:NO];
@@ -132,12 +136,10 @@
         NSMutableDictionary *presetPrefs = [NSMutableDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/com.galacticdev.kumquatpresets.plist"];
         
         NSMutableArray *presets = [presetPrefs[@"customPresetsList"] mutableCopy];
-        RLog(@"bvefore %@", presets);
         [presets removeObject:self.preset];
-        RLog(@"after %@", presets);
         [presetPrefs setObject:presets forKey:@"customPresetsList"];
         
-        [prefs setObject:@0 forKey:@"selectedPreset"];
+        [prefs setObject:@0 forKey:@"selectedPresetNotifs"];
         
         [prefs writeToFile:@"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist" atomically:YES];
         [presetPrefs writeToFile:@"/User/Library/Preferences/com.galacticdev.kumquatpresets.plist" atomically:YES];
@@ -145,7 +147,6 @@
         [self.navigationController popViewControllerAnimated:YES];
 
         KMQRootListController *previousController = self.navigationController.viewControllers[self.navigationController.viewControllers.count-1];
-        RLog(@"previousController %@", previousController);
         previousController.presetValues = nil;
         previousController.presetTitles = nil;
     }];
@@ -157,7 +158,10 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 -(void)sharePreset {
-    UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[@""] applicationActivities:nil];
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self.preset options:NSJSONWritingPrettyPrinted error:nil];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    
+    UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[jsonString] applicationActivities:nil];
     [self presentViewController:activityController animated:YES completion:nil];
 }
 @end

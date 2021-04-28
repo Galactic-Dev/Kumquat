@@ -179,6 +179,24 @@
             <key>enabled</key>
             <true/>
             <key>key</key>
+            <string>customArtworkCornerRadius</string>
+            <key>label</key>
+            <string>Custom Artwork Corner Radius</string>
+            <key>default</key>
+            <real>-1</real>
+            <key>keyboard</key>
+            <string>numbers</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSEditTextCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatpresets</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
             <string>customCornerRadius</string>
             <key>label</key>
             <string>Custom Corner Radius</string>
@@ -188,6 +206,7 @@
             <string>numbers</string>
         </dict>
 
+        
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
