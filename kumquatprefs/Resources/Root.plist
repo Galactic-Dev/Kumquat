@@ -108,6 +108,8 @@
             <string>presetValuesSource</string>
             <key>titlesDataSource</key>
             <string>presetTitlesSource</string>
+            <key>height</key>
+            <real>66</real>
         </dict>
         <dict>
             <key>cell</key>
@@ -246,6 +248,8 @@
             <string>presetValuesSource</string>
             <key>titlesDataSource</key>
             <string>presetTitlesSource</string>
+            <key>height</key>
+            <real>66</real>
         </dict>
         <dict>
             <key>cell</key>
@@ -257,29 +261,6 @@
             <key>id</key>
             <string>editPresetsNotifs</string>
         </dict>
-        <!--
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>enabled</key>
-			<true/>
-			<key>footerText</key>
-			<string></string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>detail</key>
-			<string>KMQMoreOptionsController</string>
-			<key>enabled</key>
-			<true/>
-			<key>id</key>
-			<string>Link Cell</string>
-			<key>isController</key>
-			<true/>
-			<key>label</key>
-			<string>More Options</string>
-		</dict>-->
         <dict>
             <key>cell</key>
             <string>PSGroupCell</string>

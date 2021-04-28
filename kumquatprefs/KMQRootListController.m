@@ -241,15 +241,12 @@ OBWelcomeController *welcomeController;
     UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
     handler:^(UIAlertAction * action) {
         NSString *name = alert.textFields[0].text;
-        PSSpecifier *customPresetsSpecifier = [self specifierForID:@"customPresets"];
         
         NSString *path = @"/User/Library/Preferences/com.galacticdev.kumquatpresets.plist";
         NSMutableDictionary *settings = [NSMutableDictionary dictionaryWithContentsOfFile:path] ?: [NSMutableDictionary dictionary];
         
         [self.presetTitles addObject:name];
         [self.presetValues addObject:@(self.presetTitles.count-1)];
-
-        [self replaceContiguousSpecifiers:@[customPresetsSpecifier] withSpecifiers:@[customPresetsSpecifier]];
         
         NSMutableArray *presets = [settings[@"customPresetsList"] mutableCopy] ?: [NSMutableArray array];
         [presets addObject:@{
