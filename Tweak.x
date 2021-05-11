@@ -19,6 +19,9 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
 }
 
 %hook MRUNowPlayingView
+-(void)setShowSuggestionsView:(BOOL)arg1 {
+    %orig(NO);
+}
 -(void)setContext:(NSInteger)context {
     %orig;
     if(context == 2) {
@@ -208,7 +211,6 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
                 return;
             }
             
-            RLog(@"hideRouteButton %d", hideRouteButton);
             if(hideRouteButton) self.showRoutingButton = NO;
             else self.showRoutingButton = YES;
             
@@ -231,7 +233,7 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
         %orig;
     }
 }
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+-(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
     if(disableHeaderViewTouches) {
         CGPoint artworkPoint = [self convertPoint:point toView:self.artworkView];
         CGPoint textPoint = [self convertPoint:point toView:self.labelView];
@@ -269,10 +271,6 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
         if(backgroundAlpha < 1) {
             self.artworkShadowView.hidden = YES;
         }
-        
-        if(customArtworkCornerRadius != -1) {
-            self.artworkImageView.layer.cornerRadius = customArtworkCornerRadius;
-        }
     }
     %orig(newFrame);
 }
@@ -284,6 +282,10 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
             self.iconShadowView.hidden = YES;
             self.iconView.hidden = YES;
         }
+        if(customArtworkCornerRadius != -1) {
+            self.artworkImageView.layer.cornerRadius = customArtworkCornerRadius;
+            self.artworkShadowView.hidden = YES; //easier than dealing w/ changing its corner radius bc for some reason that glitched super hard;
+        }
     }
 }
 %end
@@ -291,12 +293,21 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
 %hook MRUNowPlayingVolumeControlsView
 -(void)setFrame:(CGRect)frame {
     MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview;
-    if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2 && hasCustomVolumeBarFrame) {
-        NSArray *rect = @[@(volumeX), @(volumeY), @(volumeWidth), @(volumeHeight)];
-        NSArray *originalRect = @[@(frame.origin.x), @(frame.origin.y), @(frame.size.width), @(frame.size.height)];
-        %orig(rectWithValues(rect, originalRect, volumeFrameOption));
+    if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2) {
+        _UISliderVisualElement *visualElement = [self.slider valueForKey:@"_visualElement"];
+        UIImageView *minView = [visualElement valueForKey:@"_minValueImageView"];
+        UIImageView *maxView = [visualElement valueForKey:@"_maxValueImageView"];
+        minView.hidden = removeSpeakerIcons;
+        maxView.hidden = removeSpeakerIcons;
+                
+        if(hasCustomVolumeBarFrame) {
+            NSArray *rect = @[@(volumeX), @(volumeY), @(volumeWidth), @(volumeHeight)];
+            NSArray *originalRect = @[@(frame.origin.x), @(frame.origin.y), @(frame.size.width), @(frame.size.height)];
+            %orig(rectWithValues(rect, originalRect, volumeFrameOption));
+            return;
+        }
     }
-    else %orig;
+    %orig;
 }
 %end
 
@@ -312,15 +323,51 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
 }
 %end
 
+/*
+id leftButton;
+id middleButton;
+id rightButton;
+%hook MRUTransportButton
+-(void)setFrame:(CGRect)frame {
+    RLog(@"all %@ %@ %@", leftButton, middleButton, rightButton);
+    if(self == leftButton) {
+        RLog(@"dfs;akjfa;sldkjf;alkdsjf;lakdsjf;alkdsjf;alkdsjf");
+        NSArray *rect = @[@(transportLeftX), @(transportLeftY), @(transportLeftWidth), @(transportLeftHeight)];
+        NSArray *originalRect = @[@(frame.origin.x), @(frame.origin.y), @(frame.size.width), @(frame.size.height)];
+        %orig(rectWithValues(rect, originalRect, transportLeftFrameOption));
+    }
+    else if (self == middleButton) {
+        NSArray *rect = @[@(transportMiddleX), @(transportMiddleY), @(transportMiddleWidth), @(transportMiddleHeight)];
+        NSArray *originalRect = @[@(frame.origin.x), @(frame.origin.y), @(frame.size.width), @(frame.size.height)];
+        %orig(rectWithValues(rect, originalRect, transportMiddleFrameOption));
+    }
+    else if (self == rightButton) {
+        NSArray *rect = @[@(transportRightX), @(transportRightY), @(transportRightWidth), @(transportRightHeight)];
+        NSArray *originalRect = @[@(frame.origin.x), @(frame.origin.y), @(frame.size.width), @(frame.size.height)];
+        %orig(rectWithValues(rect, originalRect, transportRightFrameOption));
+    }
+    else {
+        %orig(CGRectMake(0, 27, 50, 50));
+    }
+}
+%end*/
+
 %hook MRUNowPlayingTransportControlsView
 -(void)setFrame:(CGRect)frame {
     MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview;
-    if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2 && hasCustomTransportFrame) {
-        NSArray *rect = @[@(transportX), @(transportY), @(transportWidth), @(transportHeight)];
-        NSArray *originalRect = @[@(frame.origin.x), @(frame.origin.y), @(frame.size.width), @(frame.size.height)];
-        %orig(rectWithValues(rect, originalRect, transportFrameOption));
+    if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2) {
+        if(hasCustomTransportFrame) {
+            NSArray *rect = @[@(transportX), @(transportY), @(transportWidth), @(transportHeight)];
+            NSArray *originalRect = @[@(frame.origin.x), @(frame.origin.y), @(frame.size.width), @(frame.size.height)];
+            %orig(rectWithValues(rect, originalRect, transportFrameOption));
+            return;
+        }/*
+        self.leftButton.frame = CGRectMake(0, 27, 50, 50);
+        leftButton = self.leftButton;
+        middleButton = self.middleButton;
+        rightButton = self.rightButton;*/
     }
-    else %orig;
+    %orig;
 }
 %end
 
@@ -336,6 +383,25 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
             self.showTimeControlsView = NO;
         }
     }
+}
+%end
+
+//makes marquee views actually scroll. idk which ios versions the scrolling doesn't work on but i've seen in on 14.2-14.3
+%hook MPUMarqueeView
+-(void)setContentGap:(CGFloat)arg1 {
+    /*if(enableMarquee)*/ %orig(0);
+    //else %orig;
+}
+-(void)setViewForContentSize:(UILabel *)view {
+    %orig;
+    //if(enableMarquee) {
+        [view setMarqueeEnabled:YES];
+        [view setMarqueeRunning:YES];
+    /*}
+    else {
+        [view setMarqueeEnabled:NO];
+        [view setMarqueeRunning:NO];
+    }*/
 }
 %end
 

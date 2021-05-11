@@ -86,7 +86,7 @@
 }
 
 -(id)readPreferenceValue:(PSSpecifier *)specifier {
-    return self.preset[specifier.properties[@"key"]];
+    return self.preset[specifier.properties[@"key"]] ?: specifier.properties[@"default"];
 }
 
 -(void)reloadSpecifiers {
@@ -116,6 +116,10 @@
 
     NSInteger selectedPreset = [prefs[@"selectedPreset"] intValue];
     NSArray *presets = presetPrefs[@"customPresetsList"];
+    if(presets.count == 0) {
+        [self.navigationController popViewControllerAnimated:YES];
+        return;
+    }
     if(selectedPreset < presets.count) {
         self.preset = [presets[selectedPreset] mutableCopy];
     }
@@ -139,9 +143,7 @@
         NSMutableDictionary *presetPrefs = [NSMutableDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/com.galacticdev.kumquatpresets.plist"];
         
         NSMutableArray *presets = [presetPrefs[@"customPresetsList"] mutableCopy];
-        RLog(@"bvefore %@", presets);
         [presets removeObject:self.preset];
-        RLog(@"after %@", presets);
         [presetPrefs setObject:presets forKey:@"customPresetsList"];
         
         [prefs setObject:@0 forKey:@"selectedPreset"];
@@ -163,7 +165,7 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 -(void)sharePreset {
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self.preset options:NSJSONWritingPrettyPrinted error:nil];
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self.preset options:0 error:nil];
     NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     
     UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[jsonString] applicationActivities:nil];

@@ -153,6 +153,42 @@
             <key>PostNotification</key>
             <string>com.galacticdev.kumquatprefs.changed</string>
             <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatpresets</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>removeSpeakerIcons</string>
+            <key>label</key>
+            <string>Hide Speaker Icons</string>
+            <key>default</key>
+            <false/>
+            <key>id</key>
+            <string>removeSpeakerIcons</string>
+        </dict>
+        <!--<dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatpresets</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>enableMarquee</string>
+            <key>label</key>
+            <string>Enable Marquee Text</string>
+            <key>default</key>
+            <true/>
+            <key>id</key>
+            <string>enableMarquee</string>
+        </dict>-->
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
             <string>PSSliderCell</string>
             <key>cellClass</key>
             <string>KMQLabeledSliderCell</string>
@@ -161,7 +197,7 @@
             <key>key</key>
             <string>backgroundAlpha</string>
             <key>label</key>
-            <string>Background Transparency</string>
+            <string>Background Alpha</string>
             <key>default</key>
             <real>1</real>
             <key>min</key>
@@ -1217,6 +1253,16 @@
             <key>id</key>
             <string>transportHeight</string>
         </dict>
+        <!--<dict>
+            <key>cell</key>
+            <string>PSLinkCell</string>
+            <key>detail</key>
+            <string>KMQTransportButtonsController</string>
+            <key>label</key>
+            <string>Individual Button Frames</string>
+            <key>id</key>
+            <string>transportButtonsController</string>
+        </dict>-->
 	</array>
 	<key>title</key>
 	<string>More Options</string>

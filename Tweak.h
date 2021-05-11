@@ -30,6 +30,8 @@ BOOL disableHeaderViewTouchesText;
 CGFloat backgroundAlpha;
 CGFloat customArtworkCornerRadius;
 CGFloat customCornerRadius;
+BOOL removeSpeakerIcons;
+//BOOL enableMarquee;
 
 BOOL hasCustomHeaderFrame;
 NSInteger headerFrameOption;
@@ -72,6 +74,27 @@ CGFloat transportX;
 CGFloat transportY;
 CGFloat transportWidth;
 CGFloat transportHeight;
+/*
+BOOL hasCustomTransportLeftFrame;
+NSInteger transportLeftFrameOption;
+CGFloat transportLeftX;
+CGFloat transportLeftY;
+CGFloat transportLeftWidth;
+CGFloat transportLeftHeight;
+
+BOOL hasCustomTransportMiddleFrame;
+NSInteger transportMiddleFrameOption;
+CGFloat transportMiddleX;
+CGFloat transportMiddleY;
+CGFloat transportMiddleWidth;
+CGFloat transportMiddleHeight;
+
+BOOL hasCustomTransportRightFrame;
+NSInteger transportRightFrameOption;
+CGFloat transportRightX;
+CGFloat transportRightY;
+CGFloat transportRightWidth;
+CGFloat transportRightHeight;*/
 
 static void updatePreset() {
     NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist"];
@@ -119,56 +142,97 @@ static void updatePreset() {
     disableHeaderViewTouches = preset[@"disableHeaderViewTouches"] ? [preset[@"disableHeaderViewTouches"] boolValue] : NO;
     disableHeaderViewTouchesArtwork = preset[@"disableHeaderViewTouchesArtwork"] ? [preset[@"disableHeaderViewTouchesArtwork"] boolValue] : YES;
     disableHeaderViewTouchesText = preset[@"disableHeaderViewTouchesText"] ? [preset[@"disableHeaderViewTouchesText"] boolValue] : YES;
-
+    removeSpeakerIcons = preset[@"removeSpeakerIcons"] ? [preset[@"removeSpeakerIcons"] boolValue] : NO;
+    //enableMarquee = preset[@"enableMarquee"] ? [preset[@"enableMarquee"] boolValue] : YES;
+    
+    
     backgroundAlpha = preset[@"backgroundAlpha"] ? [preset[@"backgroundAlpha"] floatValue] : 1.0f;
     customCornerRadius = preset[@"customCornerRadius"] && ![preset[@"customCornerRadius"] isEqualToString:@""]? [preset[@"customCornerRadius"] floatValue] : -1;
     customArtworkCornerRadius = preset[@"customArtworkCornerRadius"] && ![preset[@"customArtworkCornerRadius"] isEqualToString:@""]? [preset[@"customArtworkCornerRadius"] floatValue] : -1;
 
     
     hasCustomHeaderFrame = preset[@"hasCustomHeaderFrame"] ? [preset[@"hasCustomHeaderFrame"] boolValue] : NO;
-    headerFrameOption = preset[@"headerFrameOption"] ? [preset[@"headerFrameOption"] intValue] : 0;
-    headerX = preset[@"headerX"] ? [preset[@"headerX"] floatValue] : 0;
-    headerY = preset[@"headerY"] ? [preset[@"headerY"] floatValue] : 0;
-    headerWidth = preset[@"headerWidth"] ? [preset[@"headerWidth"] floatValue] : 0;
-    headerHeight = preset[@"headerHeight"] ? [preset[@"headerHeight"] floatValue] : 0;
-
+    if(hasCustomHeaderFrame) {
+        headerFrameOption = preset[@"headerFrameOption"] ? [preset[@"headerFrameOption"] intValue] : 0;
+        headerX = preset[@"headerX"] ? [preset[@"headerX"] floatValue] : 0;
+        headerY = preset[@"headerY"] ? [preset[@"headerY"] floatValue] : 0;
+        headerWidth = preset[@"headerWidth"] ? [preset[@"headerWidth"] floatValue] : 0;
+        headerHeight = preset[@"headerHeight"] ? [preset[@"headerHeight"] floatValue] : 0;
+    }
     
     hasCustomArtworkFrame = preset[@"hasCustomArtworkFrame"] ? [preset[@"hasCustomArtworkFrame"] boolValue] : NO;
-    artworkFrameOption = preset[@"artworkFrameOption"] ? [preset[@"artworkFrameOption"] intValue] : 0;
-    artworkX = preset[@"artworkX"] ? [preset[@"artworkX"] floatValue] : 0;
-    artworkY = preset[@"artworkY"] ? [preset[@"artworkY"] floatValue] : 0;
-    artworkWidth = preset[@"artworkWidth"] ? [preset[@"artworkWidth"] floatValue] : 0;
-    artworkHeight = preset[@"artworkHeight"] ? [preset[@"artworkHeight"] floatValue] : 0;
-
+    if(hasCustomArtworkFrame) {
+        artworkFrameOption = preset[@"artworkFrameOption"] ? [preset[@"artworkFrameOption"] intValue] : 0;
+        artworkX = preset[@"artworkX"] ? [preset[@"artworkX"] floatValue] : 0;
+        artworkY = preset[@"artworkY"] ? [preset[@"artworkY"] floatValue] : 0;
+        artworkWidth = preset[@"artworkWidth"] ? [preset[@"artworkWidth"] floatValue] : 0;
+        artworkHeight = preset[@"artworkHeight"] ? [preset[@"artworkHeight"] floatValue] : 0;
+    }
     
     hasCustomPlayerFrame = preset[@"hasCustomPlayerFrame"] ? [preset[@"hasCustomPlayerFrame"] boolValue] : NO;
-    playerFrameOption = preset[@"playerFrameOption"] ? [preset[@"playerFrameOption"] intValue] : 0;
-    playerX = preset[@"playerX"] ? [preset[@"playerX"] floatValue] : 0;
-    playerY = preset[@"playerY"] ? [preset[@"playerY"] floatValue] : 0;
-    playerWidth = preset[@"playerWidth"] ? [preset[@"playerWidth"] floatValue] : 0;
-    playerHeight = preset[@"playerHeight"] ? [preset[@"playerHeight"] floatValue] : 0;
+    if(hasCustomPlayerFrame) {
+        playerFrameOption = preset[@"playerFrameOption"] ? [preset[@"playerFrameOption"] intValue] : 0;
+        playerX = preset[@"playerX"] ? [preset[@"playerX"] floatValue] : 0;
+        playerY = preset[@"playerY"] ? [preset[@"playerY"] floatValue] : 0;
+        playerWidth = preset[@"playerWidth"] ? [preset[@"playerWidth"] floatValue] : 0;
+        playerHeight = preset[@"playerHeight"] ? [preset[@"playerHeight"] floatValue] : 0;
+    }
     
     hasCustomVolumeBarFrame = preset[@"hasCustomVolumeBarFrame"] ? [preset[@"hasCustomVolumeBarFrame"] boolValue]: NO;
-    volumeFrameOption = preset[@"volumeFrameOption"] ? [preset[@"volumeFrameOption"] intValue] : 0;
-    volumeX = preset[@"volumeX"] ? [preset[@"volumeX"] floatValue] : 0;
-    volumeY = preset[@"volumeY"] ? [preset[@"volumeY"] floatValue] : 0;
-    volumeWidth = preset[@"volumeWidth"] ? [preset[@"volumeWidth"] floatValue] : 0;
-    volumeHeight = preset[@"volumeHeight"] ? [preset[@"volumeHeight"] floatValue] : 44;
-
+    if(hasCustomVolumeBarFrame) {
+        volumeFrameOption = preset[@"volumeFrameOption"] ? [preset[@"volumeFrameOption"] intValue] : 0;
+        volumeX = preset[@"volumeX"] ? [preset[@"volumeX"] floatValue] : 0;
+        volumeY = preset[@"volumeY"] ? [preset[@"volumeY"] floatValue] : 0;
+        volumeWidth = preset[@"volumeWidth"] ? [preset[@"volumeWidth"] floatValue] : 0;
+        volumeHeight = preset[@"volumeHeight"] ? [preset[@"volumeHeight"] floatValue] : 44;
+    }
     
     hasCustomScrubberFrame = preset[@"hasCustomScrubberFrame"] ? [preset [@"hasCustomScrubberFrame"] boolValue]: NO;
-    scrubberFrameOption = preset[@"scrubberFrameOption"] ? [preset[@"scrubberFrameOption"] intValue] : 0;
-    scrubberX = preset[@"scrubberX"] ? [preset[@"scrubberX"] floatValue] : 0;
-    scrubberY = preset[@"scrubberY"] ? [preset[@"scrubberY"] floatValue] : 0;
-    scrubberWidth = preset[@"scrubberWidth"] ? [preset[@"scrubberWidth"] floatValue] : 0;
-    scrubberHeight = preset[@"scrubberHeight"] ? [preset[@"scrubberHeight"] floatValue] : 44;
+    if(hasCustomScrubberFrame) {
+        scrubberFrameOption = preset[@"scrubberFrameOption"] ? [preset[@"scrubberFrameOption"] intValue] : 0;
+        scrubberX = preset[@"scrubberX"] ? [preset[@"scrubberX"] floatValue] : 0;
+        scrubberY = preset[@"scrubberY"] ? [preset[@"scrubberY"] floatValue] : 0;
+        scrubberWidth = preset[@"scrubberWidth"] ? [preset[@"scrubberWidth"] floatValue] : 0;
+        scrubberHeight = preset[@"scrubberHeight"] ? [preset[@"scrubberHeight"] floatValue] : 44;
+    }
     
     hasCustomTransportFrame = preset[@"hasCustomTransportFrame"] ? [preset[@"hasCustomTransportFrame"] boolValue]: NO;
-    transportFrameOption = preset[@"transportFrameOption"] ? [preset[@"transportFrameOption"] intValue] : 0;
-    transportX = preset[@"transportX"] ? [preset[@"transportX"] floatValue] : 0;
-    transportY = preset[@"transportY"] ? [preset[@"transportY"] floatValue] : 0;
-    transportWidth = preset[@"transportWidth"] ? [preset[@"transportWidth"] floatValue] : 0;
-    transportHeight = preset[@"transportHeight"] ? [preset[@"transportHeight"] floatValue] : 44;
+    if(hasCustomTransportFrame) {
+        transportFrameOption = preset[@"transportFrameOption"] ? [preset[@"transportFrameOption"] intValue] : 0;
+        transportX = preset[@"transportX"] ? [preset[@"transportX"] floatValue] : 0;
+        transportY = preset[@"transportY"] ? [preset[@"transportY"] floatValue] : 0;
+        transportWidth = preset[@"transportWidth"] ? [preset[@"transportWidth"] floatValue] : 0;
+        transportHeight = preset[@"transportHeight"] ? [preset[@"transportHeight"] floatValue] : 44;
+    }
+    
+    /*hasCustomTransportLeftFrame = preset[@"hasCustomTransportLeftFrame"] ? [preset[@"hasCustomTransportLeftFrame"] boolValue] : NO;
+    RLog(@"thing %d", hasCustomTransportLeftFrame);
+    RLog(@"bruh %@", preset[@"hasCustomTransportLeftFrame"]);
+    if(hasCustomTransportLeftFrame) {
+        transportLeftFrameOption = preset[@"transportLeftFrameOption"] ? [preset[@"transportLeftFrameOption"] intValue] : 0;
+        transportLeftX = preset[@"transportLeftX"] ? [preset[@"transportLeftX"] floatValue] : 0;
+        transportLeftY = preset[@"transportLeftY"] ? [preset[@"transportLeftY"] floatValue] : 0;
+        transportLeftWidth = preset[@"transportLeftWidth"] ? [preset[@"transportLeftWidth"] floatValue] : 30;
+        transportLeftHeight = preset[@"transportLeftHeight"] ? [preset[@"transportLeftHeight"] floatValue] : 30;
+    }
+    
+    hasCustomTransportMiddleFrame = preset[@"hasCustomTransportMiddleFrame"] ? [preset[@"hasCustomTransportMiddleFrame"] boolValue] : NO;
+    if(hasCustomTransportMiddleFrame) {
+        transportMiddleFrameOption = preset[@"transportMiddleFrameOption"] ? [preset[@"transportMiddleFrameOption"] intValue] : 0;
+        transportMiddleX = preset[@"transportMiddleX"] ? [preset[@"transportMiddleX"] floatValue] : 0;
+        transportMiddleY = preset[@"transportMiddleY"] ? [preset[@"transportMiddleY"] floatValue] : 0;
+        transportMiddleWidth = preset[@"transportMiddleWidth"] ? [preset[@"transportMiddleWidth"] floatValue] : 30;
+        transportMiddleHeight = preset[@"transportMiddleHeight"] ? [preset[@"transportMiddleHeight"] floatValue] : 30;
+    }
+    
+    hasCustomTransportRightFrame = preset[@"hasCustomTransportRightFrame"] ? [preset[@"hasCustomTransportRightFrame"] boolValue] : NO;
+    if(hasCustomTransportRightFrame) {
+        transportRightFrameOption = preset[@"transportRightFrameOption"] ? [preset[@"transportRightFrameOption"] intValue] : 0;
+        transportRightX = preset[@"transportRightX"] ? [preset[@"transportRightX"] floatValue] : 0;
+        transportRightY = preset[@"transportRightY"] ? [preset[@"transportRightY"] floatValue] : 0;
+        transportRightWidth = preset[@"transportRightWidth"] ? [preset[@"transportRightWidth"] floatValue] : 30;
+        transportRightHeight = preset[@"transportRightHeight"] ? [preset[@"transportRightHeight"] floatValue] : 30;
+    }*/
 }
 
 static void loadPrefs() {
@@ -186,6 +250,11 @@ static void loadPrefs() {
     updatePreset();
 }
 
+@interface UILabel (Private)
+-(void)setMarqueeEnabled:(BOOL)arg1;
+-(void)setMarqueeRunning:(BOOL)arg2;
+@end
+
 @interface MRUArtworkView : UIView
 @property (strong, nonatomic) UIView *iconView;
 @property (strong, nonatomic) UIView *iconShadowView;
@@ -194,12 +263,22 @@ static void loadPrefs() {
 @end
 
 @interface MRUNowPlayingVolumeControlsView : UIView
+@property (strong, nonatomic) UISlider *slider;
 @end
 
 @interface MRUNowPlayingTimeControlsView : UIView
 @end
 
+@interface _UISliderVisualElement : UIView
+@end
+
 @interface MRUNowPlayingTransportControlsView : UIView
+@property (strong, nonatomic) UIView *leftButton;
+@property (strong, nonatomic) UIView *middleButton;
+@property (strong, nonatomic) UIView *rightButton;
+@end
+
+@interface MRUTransportButton : UIView
 @end
 
 @interface MRUNowPlayingHeaderView : UIView
@@ -213,6 +292,7 @@ static void loadPrefs() {
 @property (strong, nonatomic) MRUNowPlayingHeaderView *headerView;
 @property (strong, nonatomic) UIView *volumeControlsView;
 @property (nonatomic, assign) BOOL showTimeControlsView;
+@property (strong, nonatomic) MRUNowPlayingTransportControlsView *transportControlsView;
 @end
 
 @interface MRUNowPlayingContainerView : UIView

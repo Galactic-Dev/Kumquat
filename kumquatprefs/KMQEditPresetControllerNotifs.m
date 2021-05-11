@@ -6,7 +6,7 @@
         _specifiers = [self loadSpecifiersFromPlistName:@"MoreOptions" target:self];
         
         
-        NSArray *chosenIDs = @[@"headerY", @"headerX", @"headerWidth", @"headerHeight", @"artworkX", @"artworkY", @"artworkWidth", @"artworkHeight", @"playerX", @"playerY", @"playerWidth", @"playerHeight", @"volumeX", @"volumeY", @"volumeWidth", @"volumeHeight", @"scrubberX", @"scrubberY", @"scrubberWidth", @"scrubberHeight", @"transportX", @"transportY", @"transportWidth", @"transportHeight", @"disableHeaderViewTouchesArtwork", @"disableHeaderViewTouchesText", @"headerFrameOption", @"artworkFrameOption", @"playerFrameOption", @"volumeFrameOption", @"scrubberFrameOption", @"transportFrameOption"];
+        NSArray *chosenIDs = @[@"headerY", @"headerX", @"headerWidth", @"headerHeight", @"artworkX", @"artworkY", @"artworkWidth", @"artworkHeight", @"playerX", @"playerY", @"playerWidth", @"playerHeight", @"volumeX", @"volumeY", @"volumeWidth", @"volumeHeight", @"scrubberX", @"scrubberY", @"scrubberWidth", @"scrubberHeight", @"transportX", @"transportY", @"transportWidth", @"transportHeight", @"disableHeaderViewTouchesArtwork", @"disableHeaderViewTouchesText", @"headerFrameOption", @"artworkFrameOption", @"playerFrameOption", @"volumeFrameOption", @"scrubberFrameOption", @"transportFrameOption", @"transportButtonsController"];
         self.savedSpecifiers = (self.savedSpecifiers) ?: [NSMutableDictionary dictionary];
         for(PSSpecifier *specifier in [self specifiersForIDs:chosenIDs]) {
             [self.savedSpecifiers setObject:specifier forKey:[specifier propertyForKey:@"id"]];
@@ -60,10 +60,10 @@
     }
     
     if(![self.preset[@"hasCustomTransportFrame"] boolValue]) {
-        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"transportFrameOption"], self.savedSpecifiers[@"transportX"], self.savedSpecifiers[@"transportY"], self.savedSpecifiers[@"transportWidth"], self.savedSpecifiers[@"transportHeight"]] animated:animated];
+        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"transportFrameOption"], self.savedSpecifiers[@"transportX"], self.savedSpecifiers[@"transportY"], self.savedSpecifiers[@"transportWidth"], self.savedSpecifiers[@"transportHeight"], self.savedSpecifiers[@"transportButtonsController"]] animated:animated];
     }
     else if(![self containsSpecifier:self.savedSpecifiers[@"transportX"]]) {
-        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"transportFrameOption"], self.savedSpecifiers[@"transportX"], self.savedSpecifiers[@"transportY"], self.savedSpecifiers[@"transportWidth"], self.savedSpecifiers[@"transportHeight"]] afterSpecifierID:@"hasCustomTransportFrame" animated:animated];
+        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"transportFrameOption"], self.savedSpecifiers[@"transportX"], self.savedSpecifiers[@"transportY"], self.savedSpecifiers[@"transportWidth"], self.savedSpecifiers[@"transportHeight"], self.savedSpecifiers[@"transportButtonsController"]] afterSpecifierID:@"hasCustomTransportFrame" animated:animated];
     }
 }
 
@@ -85,7 +85,7 @@
 }
 
 -(id)readPreferenceValue:(PSSpecifier *)specifier {
-    return self.preset[specifier.properties[@"key"]];
+    return self.preset[specifier.properties[@"key"]] ?: specifier.properties[@"default"];
 }
 
 -(void)reloadSpecifiers {
@@ -113,6 +113,10 @@
 
     NSInteger selectedPreset = [prefs[@"selectedPresetNotifs"] intValue];
     NSArray *presets = presetPrefs[@"customPresetsList"];
+    if(presets.count == 0) {
+        [self.navigationController popViewControllerAnimated:YES];
+        return;
+    }
     if(selectedPreset < presets.count) {
         self.preset = [presets[selectedPreset] mutableCopy];
     }
@@ -158,7 +162,7 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 -(void)sharePreset {
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self.preset options:NSJSONWritingPrettyPrinted error:nil];
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self.preset options:0 error:nil];
     NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     
     UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[jsonString] applicationActivities:nil];

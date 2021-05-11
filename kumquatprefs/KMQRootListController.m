@@ -271,8 +271,13 @@ OBWelcomeController *welcomeController;
         else {
             NSError *error;
             NSData *data = [text dataUsingEncoding:NSUTF8StringEncoding];
-            NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+            NSMutableDictionary *dictionary = [[NSJSONSerialization JSONObjectWithData:data options:0 error:&error] mutableCopy];
             if(dictionary) {
+                NSString *name = alert.textFields[0].text;
+                if(name) {
+                    [dictionary setValue:name forKey:@"title"];
+                }
+                
                 PSSpecifier *customPresetsSpecifier = [self specifierForID:@"customPresets"];
                 
                 NSString *path = @"/User/Library/Preferences/com.galacticdev.kumquatpresets.plist";
