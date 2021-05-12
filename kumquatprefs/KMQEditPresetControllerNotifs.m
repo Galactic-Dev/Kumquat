@@ -6,7 +6,7 @@
         _specifiers = [self loadSpecifiersFromPlistName:@"MoreOptions" target:self];
         
         
-        NSArray *chosenIDs = @[@"headerY", @"headerX", @"headerWidth", @"headerHeight", @"artworkX", @"artworkY", @"artworkWidth", @"artworkHeight", @"playerX", @"playerY", @"playerWidth", @"playerHeight", @"volumeX", @"volumeY", @"volumeWidth", @"volumeHeight", @"scrubberX", @"scrubberY", @"scrubberWidth", @"scrubberHeight", @"transportX", @"transportY", @"transportWidth", @"transportHeight", @"disableHeaderViewTouchesArtwork", @"disableHeaderViewTouchesText", @"headerFrameOption", @"artworkFrameOption", @"playerFrameOption", @"volumeFrameOption", @"scrubberFrameOption", @"transportFrameOption", @"transportButtonsController"];
+        NSArray *chosenIDs = @[@"headerY", @"headerX", @"headerWidth", @"headerHeight", @"artworkX", @"artworkY", @"artworkWidth", @"artworkHeight", @"playerX", @"playerY", @"playerWidth", @"playerHeight", @"volumeX", @"volumeY", @"volumeWidth", @"volumeHeight", @"scrubberX", @"scrubberY", @"scrubberWidth", @"scrubberHeight", @"transportX", @"transportY", @"transportWidth", @"transportHeight", @"disableHeaderViewTouchesArtwork", @"disableHeaderViewTouchesText", @"headerFrameOption", @"artworkFrameOption", @"playerFrameOption", @"volumeFrameOption", @"scrubberFrameOption", @"transportFrameOption"];
         self.savedSpecifiers = (self.savedSpecifiers) ?: [NSMutableDictionary dictionary];
         for(PSSpecifier *specifier in [self specifiersForIDs:chosenIDs]) {
             [self.savedSpecifiers setObject:specifier forKey:[specifier propertyForKey:@"id"]];
@@ -60,10 +60,10 @@
     }
     
     if(![self.preset[@"hasCustomTransportFrame"] boolValue]) {
-        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"transportFrameOption"], self.savedSpecifiers[@"transportX"], self.savedSpecifiers[@"transportY"], self.savedSpecifiers[@"transportWidth"], self.savedSpecifiers[@"transportHeight"], self.savedSpecifiers[@"transportButtonsController"]] animated:animated];
+        [self removeContiguousSpecifiers:@[self.savedSpecifiers[@"transportFrameOption"], self.savedSpecifiers[@"transportX"], self.savedSpecifiers[@"transportY"], self.savedSpecifiers[@"transportWidth"], self.savedSpecifiers[@"transportHeight"]] animated:animated];
     }
     else if(![self containsSpecifier:self.savedSpecifiers[@"transportX"]]) {
-        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"transportFrameOption"], self.savedSpecifiers[@"transportX"], self.savedSpecifiers[@"transportY"], self.savedSpecifiers[@"transportWidth"], self.savedSpecifiers[@"transportHeight"], self.savedSpecifiers[@"transportButtonsController"]] afterSpecifierID:@"hasCustomTransportFrame" animated:animated];
+        [self insertContiguousSpecifiers:@[self.savedSpecifiers[@"transportFrameOption"], self.savedSpecifiers[@"transportX"], self.savedSpecifiers[@"transportY"], self.savedSpecifiers[@"transportWidth"], self.savedSpecifiers[@"transportHeight"]] afterSpecifierID:@"hasCustomTransportFrame" animated:animated];
     }
 }
 
