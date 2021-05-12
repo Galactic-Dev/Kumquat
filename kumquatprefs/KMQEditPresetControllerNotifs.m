@@ -105,7 +105,9 @@
     
     UIBarButtonItem *trashButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deletePreset)];
     UIBarButtonItem *shareButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(sharePreset)];
-    NSArray *barButtonItems = @[shareButton, trashButton];
+    UIBarButtonItem *editTitleButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(editTitle)];
+
+    NSArray *barButtonItems = @[shareButton, trashButton, editTitleButton];
     self.navigationItem.rightBarButtonItems=barButtonItems;
     
     NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist"];
@@ -167,5 +169,33 @@
     
     UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[jsonString] applicationActivities:nil];
     [self presentViewController:activityController animated:YES completion:nil];
+}
+-(void)editTitle {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Edit Title" message:@"Type new title below." preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+    handler:^(UIAlertAction * action) {
+        NSString *newTitle = alert.textFields[0].text;
+        self.title = newTitle;
+        
+        NSMutableDictionary *presetPrefs = [NSMutableDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/com.galacticdev.kumquatpresets.plist"];
+        NSMutableArray *presets = [presetPrefs[@"customPresetsList"] mutableCopy];
+        [presets replaceObjectAtIndex:[presets indexOfObject:self.preset] withObject:self.preset];
+
+        [self.preset setValue:newTitle forKey:@"title"];
+        
+        [presetPrefs setObject:presets forKey:@"customPresetsList"];
+               
+        [presetPrefs writeToFile:@"/User/Library/Preferences/com.galacticdev.kumquatpresets.plist" atomically:YES];
+        
+        KMQRootListController *previousController = self.navigationController.viewControllers[self.navigationController.viewControllers.count-2];
+        previousController.presetValues = nil;
+        previousController.presetTitles = nil;
+    }];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    }];
+    [alert addAction:cancelAction];
+    [alert addAction:defaultAction];
+    [alert addTextFieldWithConfigurationHandler:nil];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 @end

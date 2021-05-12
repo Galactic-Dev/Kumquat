@@ -71,7 +71,6 @@
     NSString *path = [NSString stringWithFormat:@"/User/Library/Preferences/%@.plist", specifier.properties[@"defaults"]];
     NSMutableDictionary *settings = [NSMutableDictionary dictionaryWithContentsOfFile:path];
     NSMutableArray *presets = settings[@"customPresetsList"];
-    RLog(@"prestes %@, %d, %@", presets, [presets indexOfObject:self.preset], self.preset);
     [presets replaceObjectAtIndex:[presets indexOfObject:self.preset] withObject:self.preset];
     [self.preset setValue:value forKey:specifier.properties[@"key"]];
     [settings setObject:presets forKey:@"customPresetsList"];

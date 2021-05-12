@@ -71,7 +71,6 @@ OBWelcomeController *welcomeController;
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"/Library/PreferenceBundles/kumquatprefs.bundle/header%d.png", imageLayout]]];
     imageView.contentMode = UIViewContentModeScaleAspectFit;
     
-    CGFloat originalHeight = self.headerView.frame.size.height;
     CGFloat imageHeight = imageView.image.size.height * imageView.image.scale;
     CGFloat imageWidth = imageView.image.size.width * imageView.image.scale;
     
@@ -113,11 +112,6 @@ OBWelcomeController *welcomeController;
     }
     
     [self reloadSpecifiers];
-    
-    if(originalHeight - self.headerView.frame.size.height < 0) {
-        CGPoint bottomOffset = CGPointMake(0, self.table.contentSize.height - self.table.bounds.size.height + self.table.contentInset.bottom);
-        [self.table setContentOffset:bottomOffset animated:YES];
-    }
     [self scrollViewDidScroll:self.table];
 }
 
@@ -274,7 +268,7 @@ OBWelcomeController *welcomeController;
             NSMutableDictionary *dictionary = [[NSJSONSerialization JSONObjectWithData:data options:0 error:&error] mutableCopy];
             if(dictionary) {
                 NSString *name = alert.textFields[0].text;
-                if(name) {
+                if(name && ![name isEqualToString:@""]) {
                     [dictionary setValue:name forKey:@"title"];
                 }
                 

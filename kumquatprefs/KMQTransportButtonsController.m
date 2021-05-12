@@ -50,7 +50,6 @@
     [presets replaceObjectAtIndex:[presets indexOfObject:self.preset] withObject:self.preset];
     [self.preset setValue:value forKey:specifier.properties[@"key"]];
     [settings setObject:presets forKey:@"customPresetsList"];
-    RLog(@"preste!!!s %@", presets);
     [settings writeToFile:path atomically:YES];
     
     [self updateSpecifierVisibility:YES];
