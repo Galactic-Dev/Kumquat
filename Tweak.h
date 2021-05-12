@@ -31,7 +31,6 @@ CGFloat backgroundAlpha;
 CGFloat customArtworkCornerRadius;
 CGFloat customCornerRadius;
 BOOL removeSpeakerIcons;
-//BOOL enableMarquee;
 
 BOOL hasCustomHeaderFrame;
 NSInteger headerFrameOption;
@@ -74,27 +73,6 @@ CGFloat transportX;
 CGFloat transportY;
 CGFloat transportWidth;
 CGFloat transportHeight;
-/*
-BOOL hasCustomTransportLeftFrame;
-NSInteger transportLeftFrameOption;
-CGFloat transportLeftX;
-CGFloat transportLeftY;
-CGFloat transportLeftWidth;
-CGFloat transportLeftHeight;
-
-BOOL hasCustomTransportMiddleFrame;
-NSInteger transportMiddleFrameOption;
-CGFloat transportMiddleX;
-CGFloat transportMiddleY;
-CGFloat transportMiddleWidth;
-CGFloat transportMiddleHeight;
-
-BOOL hasCustomTransportRightFrame;
-NSInteger transportRightFrameOption;
-CGFloat transportRightX;
-CGFloat transportRightY;
-CGFloat transportRightWidth;
-CGFloat transportRightHeight;*/
 
 static void updatePreset() {
     NSMutableDictionary *prefs = [NSMutableDictionary dictionaryWithContentsOfFile:@"/User/Library/Preferences/com.galacticdev.kumquatprefs.plist"];
@@ -143,7 +121,6 @@ static void updatePreset() {
     disableHeaderViewTouchesArtwork = preset[@"disableHeaderViewTouchesArtwork"] ? [preset[@"disableHeaderViewTouchesArtwork"] boolValue] : YES;
     disableHeaderViewTouchesText = preset[@"disableHeaderViewTouchesText"] ? [preset[@"disableHeaderViewTouchesText"] boolValue] : YES;
     removeSpeakerIcons = preset[@"removeSpeakerIcons"] ? [preset[@"removeSpeakerIcons"] boolValue] : NO;
-    //enableMarquee = preset[@"enableMarquee"] ? [preset[@"enableMarquee"] boolValue] : YES;
     
     
     backgroundAlpha = preset[@"backgroundAlpha"] ? [preset[@"backgroundAlpha"] floatValue] : 1.0f;
@@ -204,35 +181,6 @@ static void updatePreset() {
         transportWidth = preset[@"transportWidth"] ? [preset[@"transportWidth"] floatValue] : 0;
         transportHeight = preset[@"transportHeight"] ? [preset[@"transportHeight"] floatValue] : 44;
     }
-    
-    /*hasCustomTransportLeftFrame = preset[@"hasCustomTransportLeftFrame"] ? [preset[@"hasCustomTransportLeftFrame"] boolValue] : NO;
-    RLog(@"thing %d", hasCustomTransportLeftFrame);
-    RLog(@"bruh %@", preset[@"hasCustomTransportLeftFrame"]);
-    if(hasCustomTransportLeftFrame) {
-        transportLeftFrameOption = preset[@"transportLeftFrameOption"] ? [preset[@"transportLeftFrameOption"] intValue] : 0;
-        transportLeftX = preset[@"transportLeftX"] ? [preset[@"transportLeftX"] floatValue] : 0;
-        transportLeftY = preset[@"transportLeftY"] ? [preset[@"transportLeftY"] floatValue] : 0;
-        transportLeftWidth = preset[@"transportLeftWidth"] ? [preset[@"transportLeftWidth"] floatValue] : 30;
-        transportLeftHeight = preset[@"transportLeftHeight"] ? [preset[@"transportLeftHeight"] floatValue] : 30;
-    }
-    
-    hasCustomTransportMiddleFrame = preset[@"hasCustomTransportMiddleFrame"] ? [preset[@"hasCustomTransportMiddleFrame"] boolValue] : NO;
-    if(hasCustomTransportMiddleFrame) {
-        transportMiddleFrameOption = preset[@"transportMiddleFrameOption"] ? [preset[@"transportMiddleFrameOption"] intValue] : 0;
-        transportMiddleX = preset[@"transportMiddleX"] ? [preset[@"transportMiddleX"] floatValue] : 0;
-        transportMiddleY = preset[@"transportMiddleY"] ? [preset[@"transportMiddleY"] floatValue] : 0;
-        transportMiddleWidth = preset[@"transportMiddleWidth"] ? [preset[@"transportMiddleWidth"] floatValue] : 30;
-        transportMiddleHeight = preset[@"transportMiddleHeight"] ? [preset[@"transportMiddleHeight"] floatValue] : 30;
-    }
-    
-    hasCustomTransportRightFrame = preset[@"hasCustomTransportRightFrame"] ? [preset[@"hasCustomTransportRightFrame"] boolValue] : NO;
-    if(hasCustomTransportRightFrame) {
-        transportRightFrameOption = preset[@"transportRightFrameOption"] ? [preset[@"transportRightFrameOption"] intValue] : 0;
-        transportRightX = preset[@"transportRightX"] ? [preset[@"transportRightX"] floatValue] : 0;
-        transportRightY = preset[@"transportRightY"] ? [preset[@"transportRightY"] floatValue] : 0;
-        transportRightWidth = preset[@"transportRightWidth"] ? [preset[@"transportRightWidth"] floatValue] : 30;
-        transportRightHeight = preset[@"transportRightHeight"] ? [preset[@"transportRightHeight"] floatValue] : 30;
-    }*/
 }
 
 static void loadPrefs() {

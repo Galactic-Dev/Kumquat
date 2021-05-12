@@ -323,35 +323,6 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
 }
 %end
 
-/*
-id leftButton;
-id middleButton;
-id rightButton;
-%hook MRUTransportButton
--(void)setFrame:(CGRect)frame {
-    RLog(@"all %@ %@ %@", leftButton, middleButton, rightButton);
-    if(self == leftButton) {
-        RLog(@"dfs;akjfa;sldkjf;alkdsjf;lakdsjf;alkdsjf;alkdsjf");
-        NSArray *rect = @[@(transportLeftX), @(transportLeftY), @(transportLeftWidth), @(transportLeftHeight)];
-        NSArray *originalRect = @[@(frame.origin.x), @(frame.origin.y), @(frame.size.width), @(frame.size.height)];
-        %orig(rectWithValues(rect, originalRect, transportLeftFrameOption));
-    }
-    else if (self == middleButton) {
-        NSArray *rect = @[@(transportMiddleX), @(transportMiddleY), @(transportMiddleWidth), @(transportMiddleHeight)];
-        NSArray *originalRect = @[@(frame.origin.x), @(frame.origin.y), @(frame.size.width), @(frame.size.height)];
-        %orig(rectWithValues(rect, originalRect, transportMiddleFrameOption));
-    }
-    else if (self == rightButton) {
-        NSArray *rect = @[@(transportRightX), @(transportRightY), @(transportRightWidth), @(transportRightHeight)];
-        NSArray *originalRect = @[@(frame.origin.x), @(frame.origin.y), @(frame.size.width), @(frame.size.height)];
-        %orig(rectWithValues(rect, originalRect, transportRightFrameOption));
-    }
-    else {
-        %orig(CGRectMake(0, 27, 50, 50));
-    }
-}
-%end*/
-
 %hook MRUNowPlayingTransportControlsView
 -(void)setFrame:(CGRect)frame {
     MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview;
@@ -361,11 +332,7 @@ id rightButton;
             NSArray *originalRect = @[@(frame.origin.x), @(frame.origin.y), @(frame.size.width), @(frame.size.height)];
             %orig(rectWithValues(rect, originalRect, transportFrameOption));
             return;
-        }/*
-        self.leftButton.frame = CGRectMake(0, 27, 50, 50);
-        leftButton = self.leftButton;
-        middleButton = self.middleButton;
-        rightButton = self.rightButton;*/
+        }
     }
     %orig;
 }
@@ -389,19 +356,12 @@ id rightButton;
 //makes marquee views actually scroll. idk which ios versions the scrolling doesn't work on but i've seen in on 14.2-14.3
 %hook MPUMarqueeView
 -(void)setContentGap:(CGFloat)arg1 {
-    /*if(enableMarquee)*/ %orig(0);
-    //else %orig;
+    %orig(0);
 }
 -(void)setViewForContentSize:(UILabel *)view {
     %orig;
-    //if(enableMarquee) {
-        [view setMarqueeEnabled:YES];
-        [view setMarqueeRunning:YES];
-    /*}
-    else {
-        [view setMarqueeEnabled:NO];
-        [view setMarqueeRunning:NO];
-    }*/
+    [view setMarqueeEnabled:YES];
+    [view setMarqueeRunning:YES];
 }
 %end
 
