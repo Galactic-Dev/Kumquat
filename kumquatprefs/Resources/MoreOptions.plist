@@ -10,8 +10,6 @@
 			<string>PSGroupCell</string>
 			<key>enabled</key>
 			<true/>
-			<key>footerText</key>
-			<string>Default: 13 or 42 for large style</string>
 			<key>label</key>
 			<string>Miscellaneous</string>
 		</dict>
@@ -31,6 +29,28 @@
             <key>default</key>
             <false/>
 		</dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatpresets</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>hideRouteLabel</string>
+            <key>label</key>
+            <string>Hide Route Label</string>
+            <key>default</key>
+            <false/>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>enabled</key>
+            <true/>
+        </dict>
 		<dict>
 			<key>PostNotification</key>
 			<string>com.galacticdev.kumquatprefs.changed</string>
@@ -64,6 +84,12 @@
             <false/>
         </dict>
         <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>enabled</key>
+            <true/>
+        </dict>
+        <dict>
             <key>PostNotification</key>
             <string>com.galacticdev.kumquatprefs.changed</string>
             <key>cell</key>
@@ -94,6 +120,12 @@
             <string>Hide Scrub Bar</string>
             <key>default</key>
             <false/>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>enabled</key>
+            <true/>
         </dict>
         <dict>
             <key>PostNotification</key>
@@ -150,6 +182,12 @@
             <string>disableHeaderViewTouchesText</string>
         </dict>
         <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>enabled</key>
+            <true/>
+        </dict>
+        <dict>
             <key>PostNotification</key>
             <string>com.galacticdev.kumquatprefs.changed</string>
             <key>cell</key>
@@ -166,6 +204,36 @@
             <false/>
             <key>id</key>
             <string>removeSpeakerIcons</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>enabled</key>
+            <true/>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatpresets</string>
+            <key>enabled</key>
+            <true/>
+            <key>key</key>
+            <string>hideQuickActionButtons</string>
+            <key>label</key>
+            <string>Hide Quick Action Buttons</string>
+            <key>default</key>
+            <false/>
+            <key>id</key>
+            <string>hideQuickActionButtons</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>enabled</key>
+            <true/>
         </dict>
         <!--<dict>
             <key>PostNotification</key>
@@ -204,6 +272,46 @@
             <real>0</real>
             <key>max</key>
             <real>1</real>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>enabled</key>
+            <true/>
+            <key>label</key>
+            <string>Header Text Alignment</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSSegmentCell</string>
+            <key>default</key>
+            <integer>0</integer>
+            <key>defaults</key>
+            <string>com.galacticdev.kumquatpresets</string>
+            <key>key</key>
+            <string>headerTextAlignment</string>
+            <key>validValues</key>
+            <array>
+                <integer>0</integer>
+                <integer>1</integer>
+                <integer>2</integer>
+            </array>
+            <key>validTitles</key>
+            <array>
+                <string>Left</string>
+                <string>Center</string>
+                <string>Right</string>
+            </array>
+            <key>PostNotification</key>
+            <string>com.galacticdev.kumquatprefs.changed</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>enabled</key>
+            <true/>
+            <key>footerText</key>
+            <string>Set to -1 for default</string>
         </dict>
         <dict>
             <key>PostNotification</key>

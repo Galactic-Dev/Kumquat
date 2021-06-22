@@ -1,6 +1,8 @@
 #import "Tweak.h"
 
 CSNotificationAdjunctListViewController *adjunctListController;
+UIViewController *quickActionsViewController;
+
 static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger frameOption) {
     NSMutableArray *mutableValues = values.mutableCopy;
     for(int i = 0; i < values.count; i++) {
@@ -111,6 +113,12 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
                 self.layout = 4;
                 break;
         }
+        if(hideQuickActionButtons) {
+            quickActionsViewController.view.hidden = YES;
+        }
+        else {
+            quickActionsViewController.view.hidden = NO;
+        }
         id nowPlayingItem = [adjunctListController.identifiersToItems objectForKey:@"SBDashBoardNowPlayingAssertionIdentifier"];
         if(nowPlayingItem) {
             [adjunctListController _insertItem:nowPlayingItem animated:NO];
@@ -118,6 +126,13 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
             [adjunctListController.view _layoutStackView];
         }
     }
+}
+%end
+
+%hook CSQuickActionsViewController
+-(instancetype)init {
+    quickActionsViewController = (UIViewController *)self;
+    return %orig;
 }
 %end
 
@@ -199,25 +214,81 @@ static CGRect rectWithValues(NSArray *values, NSArray *originalValues, NSInteger
 }
 %end
 
+NSInteger previousAlignment1;
+NSInteger previousAlignment2;
+%hook MPUMarqueeView
+-(void)setFrame:(CGRect)frame {
+    MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview.superview.superview;
+    if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2) {
+        
+        /*This is a really weird way to get this to work but it does work. The reason there are 2 previous alignment variables is because there are two MPUMarqueeView's. So when the first marquee view's frame is set it goes through the first if statement, and then when the second marquee view's frame is set it goes through the second one. This is really dumb but whatever.
+         */
+        if(previousAlignment1 != headerTextAlignment) {
+            UIView *superview = self.superview;
+            [self removeFromSuperview];
+            [superview addSubview:self];
+            previousAlignment1 = headerTextAlignment;
+        }
+        else if(previousAlignment2 != headerTextAlignment) {
+            UIView *superview = self.superview;
+            [self removeFromSuperview];
+            [superview addSubview:self];
+            previousAlignment2 = headerTextAlignment;
+        }
+
+        switch (headerTextAlignment) {
+            case 0: { //left
+                self.translatesAutoresizingMaskIntoConstraints = NO;
+                [self.leadingAnchor constraintEqualToAnchor:self.superview.leadingAnchor].active = YES;
+
+                %orig(CGRectMake(self.frame.origin.x, frame.origin.y, self.frame.size.width, self.frame.size.height));
+                break;
+            }
+            case 1: { //center
+                self.translatesAutoresizingMaskIntoConstraints = NO;
+                [self.centerXAnchor constraintEqualToAnchor:self.superview.centerXAnchor].active = YES;
+
+                %orig(CGRectMake(self.frame.origin.x, frame.origin.y, self.frame.size.width, self.frame.size.height));
+                break;
+            }
+            case 2: { //right
+                self.translatesAutoresizingMaskIntoConstraints = NO;
+                [self.trailingAnchor constraintEqualToAnchor:self.superview.trailingAnchor].active = YES;
+
+                %orig(CGRectMake(self.frame.origin.x, frame.origin.y, self.frame.size.width, self.frame.size.height));
+                break;
+            }
+            default: {
+                %orig;
+                break;
+            }
+        }
+    }
+    else {
+        %orig;
+    }
+}
+%end
+
 %hook MRUNowPlayingHeaderView
 -(void)setFrame:(CGRect)frame {
-    if(currentLayout == 1 || hasCustomHeaderFrame) {
         MRUNowPlayingView *nowPlayingView = (MRUNowPlayingView *)self.superview.superview;
         if([nowPlayingView isKindOfClass:%c(MRUNowPlayingView)] && nowPlayingView.context == 2) {
+            if(hideRouteButton) self.showRoutingButton = NO;
+            else self.showRoutingButton = YES;
+            
+            if(hideArtwork) self.showArtworkView = NO;
+            else self.showArtworkView = YES;
+            
+            self.labelView.routeLabel.hidden = hideRouteLabel;
+            
             if(hasCustomHeaderFrame) {
                 NSArray *rect = @[@(headerX), @(headerY), @(headerWidth), @(headerHeight)];
                 NSArray *originalRect = @[@(frame.origin.x), @(frame.origin.y), @(frame.size.width), @(frame.size.height)];
                 %orig(rectWithValues(rect, originalRect, headerFrameOption));
                 return;
             }
-            
-            if(hideRouteButton) self.showRoutingButton = NO;
-            else self.showRoutingButton = YES;
-            
-            if(hideArtwork) self.showArtworkView = NO;
-            else self.showArtworkView = YES;
         }
-    }
     %orig;
 }
 -(void)setShowRoutingButton:(BOOL)arg1 {

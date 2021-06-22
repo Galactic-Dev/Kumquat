@@ -20,6 +20,7 @@ NSInteger selectedPresetNotifs;
 NSInteger currentPreset;
 
 BOOL hideRouteButton;
+BOOL hideRouteLabel;
 BOOL hideArtwork;
 BOOL hideIconView;
 BOOL hideVolumeBar;
@@ -31,6 +32,8 @@ CGFloat backgroundAlpha;
 CGFloat customArtworkCornerRadius;
 CGFloat customCornerRadius;
 BOOL removeSpeakerIcons;
+NSInteger headerTextAlignment;
+BOOL hideQuickActionButtons;
 
 BOOL hasCustomHeaderFrame;
 NSInteger headerFrameOption;
@@ -113,6 +116,7 @@ static void updatePreset() {
     }
     
     hideRouteButton = preset[@"hideRouteButton"] ? [preset[@"hideRouteButton"] boolValue] : NO;
+    hideRouteLabel = preset[@"hideRouteLabel"] ? [preset[@"hideRouteLabel"] boolValue] : NO;
     hideArtwork = preset[@"hideArtwork"] ? [preset[@"hideArtwork"] boolValue] : NO;
     hideIconView = preset[@"hideIconView"] ? [preset[@"hideIconView"] boolValue] : NO;
     hideVolumeBar = preset[@"hideVolumeBar"] ? [preset[@"hideVolumeBar"] boolValue] : NO;
@@ -121,6 +125,8 @@ static void updatePreset() {
     disableHeaderViewTouchesArtwork = preset[@"disableHeaderViewTouchesArtwork"] ? [preset[@"disableHeaderViewTouchesArtwork"] boolValue] : YES;
     disableHeaderViewTouchesText = preset[@"disableHeaderViewTouchesText"] ? [preset[@"disableHeaderViewTouchesText"] boolValue] : YES;
     removeSpeakerIcons = preset[@"removeSpeakerIcons"] ? [preset[@"removeSpeakerIcons"] boolValue] : NO;
+    headerTextAlignment = preset[@"headerTextAlignment"] ? [preset[@"headerTextAlignment"] intValue] : 0;
+    hideQuickActionButtons = preset[@"hideQuickActionButtons"] ? [preset[@"hideQuickActionButtons"] boolValue] : NO;
     
     
     backgroundAlpha = preset[@"backgroundAlpha"] ? [preset[@"backgroundAlpha"] floatValue] : 1.0f;
@@ -215,6 +221,7 @@ static void loadPrefs() {
 @end
 
 @interface MRUNowPlayingTimeControlsView : UIView
+@property (strong, nonatomic) UIView *knobView;
 @end
 
 @interface _UISliderVisualElement : UIView
@@ -229,11 +236,23 @@ static void loadPrefs() {
 @interface MRUTransportButton : UIView
 @end
 
+@interface MPRouteLabel : UIView
+@end
+
+@interface MPUMarqueeView : UIView
+@end
+
+@interface MRUNowPlayingLabelView : UIView
+@property (strong, nonatomic) MPRouteLabel *routeLabel;
+@property (strong, nonatomic) MPUMarqueeView *titleMarqueeView;
+@property (strong, nonatomic) MPUMarqueeView *subtitleMarqueeView;
+@end
+
 @interface MRUNowPlayingHeaderView : UIView
 @property (strong, nonatomic) MRUArtworkView *artworkView;
-@property (strong, nonatomic) UIView *labelView;
 @property (nonatomic, assign) BOOL showArtworkView;
 @property (nonatomic, assign) BOOL showRoutingButton;
+@property (strong, nonatomic) MRUNowPlayingLabelView *labelView;
 @end
 
 @interface MRUNowPlayingControlsView : UIView
